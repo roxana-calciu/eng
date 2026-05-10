@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English Tutor">
+<title>English Tutor</title>
+<!--
+=================================================================
+ENGLISH TUTOR v3.0
+=================================================================
+1. SALVARE: AirDrop / iCloud Drive -> aplicatia Fisiere
+2. DESCHIDE: apasa fisierul din Fisiere -> Safari
+3. HOME SCREEN: Safari -> Partajare -> "Adauga pe ecranul principal"
+4. CHEIE API: tab Setari -> lipeste cheia de la aistudio.google.com/apikey
+=================================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6f0;--bg2:#f0e9df;--card:#fffdf8;
+  --ink:#1c1612;--ink2:#6b5e52;--line:#e2d8cb;
+  --teal:#1d4d49;--teal2:#296461;--teals:#d6eae8;
+  --rust:#c24432;--rusts:#f9ddd8;
+  --grn:#4c7a40;--grns:#dbebd6;
+  --amb:#c8912a;--ambs:#f5e3be;
+  --r:14px;--sh:0 2px 14px rgba(0,0,0,.07);--tr:all .2s ease;
+  --nb-line:#c8daf5;--nb-margin:#e8b4b4;
+}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Manrope',system-ui,sans-serif;font-size:16px;line-height:1.65;overscroll-behavior:none}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.2;margin:0 0 .6em}
+h2{font-size:1.3rem}h3{font-size:1.05rem;font-weight:500}
+a{color:var(--teal2)}textarea{resize:vertical}
+
+/* Layout */
+#app{display:flex;flex-direction:column;height:100vh;height:-webkit-fill-available;max-width:840px;margin:0 auto}
+#hdr{flex-shrink:0;background:var(--card);border-bottom:1.5px solid var(--line);padding-top:env(safe-area-inset-top,0);position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+#app-title{text-align:center;padding:9px 16px 3px;font-family:'Fraunces',serif;font-size:1.05rem;color:var(--teal);letter-spacing:-.02em}
+#app-title small{display:block;font-family:'Manrope',sans-serif;font-size:.62rem;font-weight:400;color:var(--ink2);margin-top:1px;text-transform:uppercase;letter-spacing:.08em}
+#tabbar{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 2px}
+#tabbar::-webkit-scrollbar{display:none}
+.tb{flex:none;padding:8px 11px;background:none;border:none;border-bottom:3px solid transparent;font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap;transition:var(--tr);min-height:44px;display:inline-flex;align-items:center;gap:3px}
+.tb.on{color:var(--teal);border-bottom-color:var(--teal)}
+#cnt{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tp{display:none;padding:18px 15px 110px;animation:fin .22s ease}
+.tp.on{display:block}
+@keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Cards */
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--sh)}
+.cxs{background:var(--bg2);border-radius:10px;padding:11px 13px;margin-bottom:8px}
+
+/* Forms */
+label{display:block;font-size:.74rem;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+label.rl{text-transform:none;font-weight:500;font-size:1rem;letter-spacing:0;color:var(--ink);display:flex;align-items:center;gap:10px;margin-bottom:8px}
+label.rl input[type=radio]{width:20px;height:20px;accent-color:var(--teal)}
+input[type=text],input[type=url],input[type=password],textarea,select{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:1rem;font-family:'Manrope',sans-serif;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal2);background:#fff}
+textarea{min-height:80px}
+.fg{margin-bottom:13px}
+
+/* NOTEBOOK PAPER */
+.notebook-wrap{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:12px}
+.notebook-wrap::before{content:'';position:absolute;left:46px;top:0;bottom:0;width:2px;background:var(--nb-margin);opacity:.5;z-index:1;pointer-events:none}
+.notebook-area{
+  display:block;width:100%;
+  background-image:repeating-linear-gradient(transparent,transparent 29px,var(--nb-line) 29px,var(--nb-line) 30px);
+  line-height:30px;padding:10px 14px 10px 58px;
+  border:none;border-radius:0;background-color:transparent;
+  font-family:'Fraunces',Georgia,serif;font-size:1.05rem;
+  color:var(--ink);min-height:210px;
+  resize:none;
+}
+.notebook-area:focus{outline:none;background-color:#fffef5}
+.notebook-url{padding:8px 14px 8px 58px;border-bottom:1px solid var(--line);font-size:.82rem;color:var(--ink2);font-family:'Manrope',sans-serif;display:flex;align-items:center;gap:6px;background:var(--bg2)}
+.notebook-url input{border:none;background:transparent;padding:0;font-size:.82rem;color:var(--teal2);flex:1;font-family:'Manrope',sans-serif}
+.notebook-url input:focus{outline:none}
+.notebook-url input::placeholder{color:var(--ink2);opacity:.6}
+
+/* Displayed summary (notebook style) */
+.nb-display{
+  background-image:repeating-linear-gradient(transparent,transparent 29px,var(--nb-line) 29px,var(--nb-line) 30px);
+  line-height:30px;padding:10px 14px 10px 58px;
+  font-family:'Fraunces',Georgia,serif;font-size:1.05rem;
+  color:var(--ink);white-space:pre-wrap;word-break:break-word;
+  background-color:#fffef5;min-height:60px;
+}
+
+/* Teacher corrections */
+.mm{background:var(--rusts);border-bottom:2.5px solid var(--rust);padding:1px 2px;border-radius:3px;cursor:pointer;transition:var(--tr)}
+.mm:active{background:var(--rust);color:#fff}
+.tc-blk{display:inline}
+.tc-w{text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:2px;color:var(--rust);opacity:.8}
+.tc-r{color:var(--grn);font-weight:700;font-style:italic;margin-left:2px;border-bottom:1.5px solid var(--grn)}
+
+/* Word cards */
+.wc{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:9px}
+.wch{display:flex;align-items:center;padding:13px 15px;cursor:pointer;gap:10px;min-height:58px}
+.wch:active{background:var(--bg2)}
+.wcw{flex:1;font-size:1.04rem;font-weight:700}
+.wcro{font-size:.8rem;color:var(--ink2);margin-top:2px}
+.wcp{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--teal2);background:var(--teals);padding:3px 8px;border-radius:6px;white-space:nowrap}
+.wcb{display:none;padding:0 15px 14px;border-top:1px solid var(--line);background:var(--bg)}
+.wcb.on{display:block}
+.wcb .lbl{font-size:.7rem;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 3px}
+.wcb .exl{font-style:italic;font-size:.92rem;margin-bottom:3px;color:var(--ink)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:11px 18px;border:none;border-radius:10px;font-family:'Manrope',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:var(--tr);min-height:44px;min-width:44px;-webkit-appearance:none}
+.bp{background:var(--teal);color:#fff}.bp:active{background:var(--teal2)}
+.bs{background:var(--bg2);color:var(--ink);border:1.5px solid var(--line)}.bs:active{background:var(--line)}
+.br{background:var(--rusts);color:var(--rust)}
+.bg2c{background:var(--grns);color:var(--grn)}
+.bsm{padding:7px 12px;font-size:.78rem;min-height:36px;border-radius:8px}
+.bfw{width:100%}
+.bic{padding:9px;border-radius:10px;background:var(--bg2);color:var(--ink2);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-ai{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;font-size:.78rem;padding:7px 12px;min-height:36px;border-radius:8px;border:none;font-family:'Manrope',sans-serif;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:var(--tr)}
+.btn-ai:disabled{opacity:.4;cursor:not-allowed}
+
+/* SRS badges */
+.bdg{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.bnew{background:var(--ambs);color:var(--amb)}
+.blrn{background:var(--rusts);color:var(--rust)}
+.brev{background:var(--teals);color:var(--teal)}
+.bdue{background:var(--rusts);color:var(--rust)}
+
+/* Practice */
+#pc{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:28px 20px;text-align:center;margin-bottom:16px;box-shadow:0 4px 22px rgba(0,0,0,.07);min-height:180px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.pml{font-size:.7rem;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.pf{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:600;color:var(--ink);line-height:1.3}
+.paw{font-family:'Fraunces',serif;font-size:1.4rem;color:var(--teal);font-weight:600}
+.pap{font-family:'JetBrains Mono',monospace;font-size:.93rem;color:var(--teal2);margin-top:5px}
+.pad{font-size:.92rem;color:var(--ink);margin-top:9px;line-height:1.6}
+.pae{margin-top:7px}
+.pae .ex{font-style:italic;font-size:.87rem;color:var(--ink2);margin-bottom:3px}
+.pfb-ok{background:var(--grns);border:1.5px solid var(--grn);border-radius:12px;padding:13px;text-align:center;margin-bottom:12px}
+.pfb-no{background:var(--rusts);border:1.5px solid var(--rust);border-radius:12px;padding:13px;text-align:center;margin-bottom:12px}
+.pfb-ok .big{font-family:'Fraunces',serif;font-size:1.25rem;color:var(--grn);font-weight:600}
+.pfb-no .big{font-family:'Fraunces',serif;font-size:1.25rem;color:var(--rust);font-weight:600}
+.pfb-no .cor{font-family:'Fraunces',serif;font-size:1.1rem;color:var(--grn);font-weight:700;margin-top:5px}
+/* Grade slider */
+.gslide-wrap{margin-top:14px}
+.gslide-track{position:relative;margin:8px 0 10px}
+.gslide-track input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:4px;outline:none;cursor:pointer;background:linear-gradient(to right,#fde8e4 0%,var(--ambs) 33%,#e7eef8 66%,var(--grns) 100%);border:1.5px solid var(--line)}
+.gslide-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:var(--teal);border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.22);cursor:pointer;transition:background .15s}
+.gslide-track input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--teal);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer}
+.g-lbls{display:flex;justify-content:space-between;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:12px;padding:0 4px}
+#g-badge{text-align:center;margin-bottom:12px;font-family:'Fraunces',serif;font-size:1.15rem;font-weight:600;transition:color .15s}
+
+/* History */
+.hi{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:9px}
+.hih{display:flex;align-items:center;padding:12px 15px;cursor:pointer;gap:9px;min-height:52px}
+.hih:active{background:var(--bg2)}
+.hid{font-size:.74rem;color:var(--ink2);white-space:nowrap}
+.hib{display:none;padding:0 15px 14px;border-top:1px solid var(--line)}
+.hib.on{display:block}
+
+/* Mistake panel */
+#mpo{position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:199;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+#mpo.on{display:block}
+#mp{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:840px;background:var(--card);border-top:2px solid var(--line);border-radius:18px 18px 0 0;padding:20px 18px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+24px);box-shadow:0 -8px 32px rgba(0,0,0,.13);z-index:200;transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#mp.on{transform:translateX(-50%) translateY(0)}
+
+/* Toast */
+#tst{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px)+22px);left:50%;transform:translateX(-50%) translateY(14px);background:#1a1612ee;color:#fff;padding:10px 20px;border-radius:24px;font-size:.86rem;font-weight:600;z-index:300;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;white-space:nowrap;max-width:calc(100vw - 40px);text-align:center}
+#tst.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Misc */
+.spin{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;vertical-align:middle}
+.spin.dk{border-color:rgba(0,0,0,.1);border-top-color:var(--teal)}
+@keyframes rot{to{transform:rotate(360deg)}}
+.muted{color:var(--ink2);font-size:.88rem}
+.small{font-size:.8rem}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;background:var(--bg2);color:var(--ink2);font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.empty{text-align:center;padding:42px 16px;color:var(--ink2)}
+.empty .ei{font-size:2.6rem;margin-bottom:10px}
+.errb{background:var(--rusts);border:1.5px solid var(--rust);border-radius:10px;padding:13px;color:var(--rust);font-size:.88rem;margin-top:10px;word-break:break-word;white-space:pre-wrap}
+.okb{background:var(--grns);border:1.5px solid var(--grn);border-radius:10px;padding:13px;color:var(--grn);font-size:.88rem;margin-top:10px}
+.stk{text-decoration:line-through;color:var(--rust);font-weight:600}
+.crt{color:var(--grn);font-weight:700}
+.row{display:flex;align-items:center}.rsb{display:flex;align-items:center;justify-content:space-between}
+.g8{gap:8px}.g10{gap:10px}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mb0{margin-bottom:0}
+.lbl2{font-size:.7rem;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div id="app-title">English Tutor<small>jurnal de studiu personal</small></div>
+  <div id="tabbar">
+    <button class="tb on" data-tab="rezumat">&#128221; Rezumat</button>
+    <button class="tb" data-tab="cuvinte">&#128218; Cuvinte</button>
+    <button class="tb" data-tab="idiomuri">&#128172; Idiomuri</button>
+    <button class="tb" data-tab="exersare">&#127183; Exersare</button>
+    <button class="tb" data-tab="istoric">&#128336; Istoric</button>
+    <button class="tb" data-tab="setari">&#9881; Setari</button>
+  </div>
+</div>
+<div id="cnt">
+
+<!-- ===== REZUMAT ===== -->
+<div class="tp on" id="tab-rezumat">
+  <div id="rp1">
+    <h2 style="margin-bottom:10px">Rezumat nou</h2>
+    <div class="notebook-wrap">
+      <div class="notebook-url">
+        <span style="font-weight:700;color:var(--ink2);flex-shrink:0">URL</span>
+        <input type="url" id="r-url" placeholder="adresa articolului (optional)">
+      </div>
+      <textarea class="notebook-area" id="r-sum" placeholder="Scrie rezumatul tau in engleza...&#10;&#10;Nu te grabi — scrie atat cat ai nevoie."></textarea>
+    </div>
+    <button class="btn bp bfw" id="btn-chk" onclick="checkSummary()">&#10024; Verifica greseli</button>
+    <div id="r-err" class="errb" style="display:none"></div>
+  </div>
+
+  <div id="rp2" style="display:none">
+    <div class="rsb mb0" style="margin-bottom:10px">
+      <h2 style="margin:0">Rezumatul meu</h2>
+      <span id="r-mcnt" class="tag" style="background:var(--rusts);color:var(--rust)"></span>
+    </div>
+    <p class="muted" style="margin:0 0 10px;font-size:.81rem">&#128071; Apasa greselile portocalii pentru a le corecta. Dupa corectare apar ca taietura profesorului.</p>
+    <div class="notebook-wrap">
+      <div class="nb-display" id="r-hltext"></div>
+    </div>
+    <div class="row g10">
+      <button class="btn bp" onclick="showAnalysis()" style="flex:1">&#128202; Analiza completa</button>
+      <button class="btn bs bsm" onclick="resetSummary()">&#8617; Nou</button>
+    </div>
+  </div>
+
+  <div id="rp3" style="display:none">
+    <div class="rsb" style="margin-bottom:13px">
+      <h2 style="margin:0">Analiza completa</h2>
+      <button class="btn bs bsm" onclick="resetSummary()">&#8617; Nou</button>
+    </div>
+    <div class="card">
+      <h3>&#10003; Versiunea corectata</h3>
+      <div class="nb-display" id="an-cor" style="font-size:.96rem;color:var(--teal);background-image:none;padding-left:14px"></div>
+    </div>
+    <div class="card">
+      <h3>&#128308; Greseli (<span id="an-mc">0</span>)</h3>
+      <div id="an-ml"></div>
+    </div>
+    <div class="card">
+      <h3>&#128204; Tipare de corectat</h3>
+      <div id="an-pat"></div>
+    </div>
+    <div class="card">
+      <h3>&#128214; Vocabular de imbunatatit</h3>
+      <p class="muted" style="font-size:.8rem;margin:0 0 10px">Apasa <strong>+ Adauga</strong> si AI-ul completeaza automat toate campurile.</p>
+      <div id="an-voc"></div>
+    </div>
+    <div class="card" id="an-misc" style="display:none">
+      <h3>&#128222; Continut omis</h3>
+      <div id="an-miss" class="muted"></div>
+    </div>
+    <button class="btn bs bfw mt8" onclick="resetSummary()">&#9999; Rezumat nou</button>
+  </div>
+</div>
+
+<!-- ===== CUVINTE ===== -->
+<div class="tp" id="tab-cuvinte">
+  <div class="rsb" style="margin-bottom:13px">
+    <h2 style="margin:0">Vocabularul meu</h2>
+    <button class="btn bp bsm" onclick="openAdd('words')">+ Adauga</button>
+  </div>
+  <div id="aw-form" style="display:none">
+    <div class="card">
+      <h3>Cuvant nou</h3>
+      <div class="fg"><label>Cuvant (engleza) *</label><input type="text" id="w-word" placeholder="e.g. persevere"></div>
+      <div class="fg">
+        <div class="rsb" style="margin-bottom:5px"><label style="margin:0">Pronuntie &middot; Definitie &middot; Exemple</label><button class="btn-ai" id="btn-ai-w" onclick="aiFill('words')">&#10024; Completeaza cu AI</button></div>
+        <input type="text" id="w-pron" style="font-family:'JetBrains Mono',monospace" placeholder="per-si-VIAR (fonetic roman)">
+      </div>
+      <div class="fg"><label>Definitie (engleza)</label><textarea id="w-def" rows="2" placeholder="to continue trying despite difficulties..."></textarea></div>
+      <div class="fg"><label>Inteles (romana)</label><input type="text" id="w-ro" placeholder="a persevera, a continua..."></div>
+      <div class="fg mb0"><label>Exemple (unul pe rand)</label><textarea id="w-ex" rows="3" placeholder="She persevered despite all obstacles."></textarea></div>
+      <div class="row g10 mt12">
+        <button class="btn bp" onclick="saveItem('words')" style="flex:1">Salveaza</button>
+        <button class="btn bs" onclick="cancelAdd('words')">Anuleaza</button>
+      </div>
+    </div>
+  </div>
+  <div id="ew-form" style="display:none">
+    <div class="card">
+      <h3>Editeaza cuvant</h3>
+      <input type="hidden" id="w-eid">
+      <div class="fg"><label>Cuvant *</label><input type="text" id="w-ew"></div>
+      <div class="fg">
+        <div class="rsb" style="margin-bottom:5px"><label style="margin:0">Pronuntie</label><button class="btn-ai bsm" onclick="aiFillEdit('words')">&#10024; AI</button></div>
+        <input type="text" id="w-ep" style="font-family:'JetBrains Mono',monospace">
+      </div>
+      <div class="fg"><label>Definitie</label><textarea id="w-ed" rows="2"></textarea></div>
+      <div class="fg"><label>Inteles (romana)</label><input type="text" id="w-er"></div>
+      <div class="fg mb0"><label>Exemple</label><textarea id="w-ee" rows="3"></textarea></div>
+      <div class="row g10 mt12">
+        <button class="btn bp" onclick="updateItem('words')" style="flex:1">Actualizeaza</button>
+        <button class="btn bs" onclick="cancelEdit('words')">Anuleaza</button>
+      </div>
+    </div>
+  </div>
+  <div class="fg" style="margin-bottom:11px"><input type="text" id="ws-srch" placeholder="&#128269; Cauta cuvant..." oninput="renderWords()"></div>
+  <div id="wlist"></div>
+</div>
+
+<!-- ===== IDIOMURI ===== -->
+<div class="tp" id="tab-idiomuri">
+  <div class="rsb" style="margin-bottom:13px">
+    <h2 style="margin:0">Idiomurile mele</h2>
+    <button class="btn bp bsm" onclick="openAdd('idioms')">+ Adauga</button>
+  </div>
+  <div id="ai-form" style="display:none">
+    <div class="card">
+      <h3>Idiom nou</h3>
+      <div class="fg"><label>Idiom (engleza) *</label><input type="text" id="i-word" placeholder="e.g. bite the bullet"></div>
+      <div class="fg">
+        <div class="rsb" style="margin-bottom:5px"><label style="margin:0">Pronuntie &middot; Definitie &middot; Exemple</label><button class="btn-ai" id="btn-ai-i" onclick="aiFill('idioms')">&#10024; Completeaza cu AI</button></div>
+        <input type="text" id="i-pron" style="font-family:'JetBrains Mono',monospace" placeholder="bait de BU-let">
+      </div>
+      <div class="fg"><label>Definitie (engleza)</label><textarea id="i-def" rows="2" placeholder="to endure a painful situation..."></textarea></div>
+      <div class="fg"><label>Inteles (romana)</label><input type="text" id="i-ro" placeholder="a face fata cu curaj..."></div>
+      <div class="fg mb0"><label>Exemple (unul pe rand)</label><textarea id="i-ex" rows="3" placeholder="She bit the bullet and went to the dentist."></textarea></div>
+      <div class="row g10 mt12">
+        <button class="btn bp" onclick="saveItem('idioms')" style="flex:1">Salveaza</button>
+        <button class="btn bs" onclick="cancelAdd('idioms')">Anuleaza</button>
+      </div>
+    </div>
+  </div>
+  <div id="ei-form" style="display:none">
+    <div class="card">
+      <h3>Editeaza idiom</h3>
+      <input type="hidden" id="i-eid">
+      <div class="fg"><label>Idiom *</label><input type="text" id="i-ew"></div>
+      <div class="fg">
+        <div class="rsb" style="margin-bottom:5px"><label style="margin:0">Pronuntie</label><button class="btn-ai bsm" onclick="aiFillEdit('idioms')">&#10024; AI</button></div>
+        <input type="text" id="i-ep" style="font-family:'JetBrains Mono',monospace">
+      </div>
+      <div class="fg"><label>Definitie</label><textarea id="i-ed" rows="2"></textarea></div>
+      <div class="fg"><label>Inteles (romana)</label><input type="text" id="i-er"></div>
+      <div class="fg mb0"><label>Exemple</label><textarea id="i-ee" rows="3"></textarea></div>
+      <div class="row g10 mt12">
+        <button class="btn bp" onclick="updateItem('idioms')" style="flex:1">Actualizeaza</button>
+        <button class="btn bs" onclick="cancelEdit('idioms')">Anuleaza</button>
+      </div>
+    </div>
+  </div>
+  <div class="fg" style="margin-bottom:11px"><input type="text" id="is-srch" placeholder="&#128269; Cauta idiom..." oninput="renderIdioms()"></div>
+  <div id="ilist"></div>
+</div>
+
+<!-- ===== EXERSARE ===== -->
+<div class="tp" id="tab-exersare">
+  <div id="p-setup">
+    <h2>Sesiune de exersare</h2>
+    <div class="card">
+      <div class="fg">
+        <label>Ce exersezi?</label>
+        <label class="rl"><input type="radio" name="psc" value="all" checked> Toate (cuvinte + idiomuri)</label>
+        <label class="rl"><input type="radio" name="psc" value="words"> Doar cuvinte</label>
+        <label class="rl"><input type="radio" name="psc" value="idioms"> Doar idiomuri</label>
+      </div>
+      <div class="fg mb0">
+        <label for="p-mode">Mod</label>
+        <select id="p-mode">
+          <option value="ro-en">Romana &rarr; Engleza (scrie cuvantul)</option>
+          <option value="en-ro">Engleza &rarr; Romana (scrie traducerea)</option>
+          <option value="def-en">Definitie &rarr; Cuvant (scrie cuvantul)</option>
+        </select>
+      </div>
+    </div>
+    <p id="p-due" class="muted" style="text-align:center;margin-bottom:12px;font-size:.88rem"></p>
+    <button class="btn bp bfw" onclick="startPractice()">&#128640; Incepe sesiunea</button>
+  </div>
+  <div id="p-sess" style="display:none">
+    <div class="rsb" style="margin-bottom:14px">
+      <div class="row g8">
+        <span id="p-prog" class="tag"></span>
+        <span id="p-again" class="tag" style="background:var(--rusts);color:var(--rust);display:none"></span>
+      </div>
+      <button class="btn bs bsm" onclick="confirmEnd()">&#10005; Termina</button>
+    </div>
+    <div id="pc"><div class="pml" id="p-lbl"></div><div class="pf" id="p-front"></div></div>
+    <div id="p-inp-area" class="card" style="margin-bottom:12px">
+      <label for="p-ans-inp" style="margin-bottom:8px">Raspunsul tau:</label>
+      <input type="text" id="p-ans-inp" placeholder="Scrie raspunsul..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="btn bp bfw mt8" id="btn-chk-a" onclick="checkAnswer()">&#10003; Verifica</button>
+    </div>
+    <div id="p-fb" style="display:none"></div>
+    <div id="p-rev" style="display:none">
+      <div class="card">
+        <div style="text-align:left">
+          <div class="paw" id="pa-w"></div>
+          <div class="pap" id="pa-p"></div>
+          <div class="pad" id="pa-d"></div>
+          <div class="pae" id="pa-e"></div>
+        </div>
+      </div>
+      <div id="gbtns">
+        <div class="gslide-wrap">
+          <div class="gslide-track">
+            <input type="range" id="g-slider" min="0" max="3" value="2" oninput="updateGradeSlider()">
+          </div>
+          <div class="g-lbls">
+            <span style="color:var(--rust)">Din nou</span>
+            <span style="color:var(--amb)">Greu</span>
+            <span style="color:#3a6ba8">Mediu</span>
+            <span style="color:var(--grn)">Usor</span>
+          </div>
+          <div id="g-badge">— Mediu —</div>
+          <button class="btn bfw" id="g-confirm" onclick="gradeFromSlider()" style="background:#3a6ba8;color:#fff"><span id="g-lbl">Confirma: Mediu</span> <span id="g-int" style="opacity:.75;font-weight:400;font-size:.82rem"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="p-end" style="display:none">
+    <div style="text-align:center;padding:40px 16px">
+      <div style="font-size:3rem;margin-bottom:12px">&#127881;</div>
+      <h2>Sesiune terminata!</h2>
+      <p class="muted" id="p-end-s"></p>
+      <button class="btn bp mt16" onclick="showSetup()">Sesiune noua</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ISTORIC ===== -->
+<div class="tp" id="tab-istoric">
+  <h2>Istoricul sesiunilor</h2>
+  <div id="hlist"></div>
+</div>
+
+<!-- ===== SETARI ===== -->
+<div class="tp" id="tab-setari">
+  <h2>Setari</h2>
+  <div class="card">
+    <h3>&#128273; Cheie API Gemini</h3>
+    <p class="muted" style="margin-bottom:11px;font-size:.82rem">Obtii cheia gratuit la <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a></p>
+    <div class="fg"><label>Cheie API (Gemini 2.5 Flash)</label><input type="password" id="s-key" placeholder="AIza..." autocomplete="off"></div>
+    <div class="row g10">
+      <button class="btn bp" onclick="saveKey()" style="flex:1">Salveaza</button>
+      <button class="btn bs" onclick="testKey()">Testeaza</button>
+    </div>
+    <div id="s-res" style="display:none;margin-top:9px"></div>
+  </div>
+  <div class="card">
+    <h3>&#128190; Date</h3>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn bs bfw" onclick="exportData()">&#128228; Exporta (JSON)</button>
+      <label class="btn bs bfw" style="cursor:pointer;justify-content:center">&#128229; Importa din JSON<input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
+    </div>
+  </div>
+  <div class="card">
+    <h3>&#128465; Resetare</h3>
+    <p class="muted" style="margin-bottom:10px;font-size:.82rem">Sterge permanent toate datele.</p>
+    <button class="btn br bfw" onclick="wipeData()">&#9888; Sterge toate datele</button>
+  </div>
+  <div class="card">
+    <h3>&#8505; Info</h3>
+    <p class="muted mb0" style="font-size:.82rem;margin:0">English Tutor v3.0 &mdash; Model: Gemini 2.5 Flash<br>Date locale, pe acest dispozitiv.<br><span id="s-stats" style="margin-top:5px;display:block"></span></p>
+  </div>
+</div>
+
+</div></div>
+
+<!-- MISTAKE PANEL -->
+<div id="mpo" onclick="closeMP()"></div>
+<div id="mp">
+  <div class="rsb" style="margin-bottom:14px">
+    <h3 style="margin:0" id="mp-ttl">Corecteaza greseala</h3>
+    <button class="btn bic bsm" onclick="closeMP()">&#10005;</button>
+  </div>
+  <div id="mp-bd"></div>
+</div>
+<div id="tst"></div>
+
+<script>
+'use strict';
+
+/* ====== STORAGE (robust) ====== */
+function lsSet(k,v){
+  try{localStorage.setItem(k,JSON.stringify(v));return true}
+  catch(e){toast('Eroare salvare: '+e.message);return false}
+}
+function lsGet(k,d){
+  try{const v=localStorage.getItem(k);return v!=null?JSON.parse(v):d}
+  catch{return d}
+}
+
+var WW=lsGet('et_w',[]);
+var II=lsGet('et_i',[]);
+var HH=lsGet('et_h',[]);
+var CF=lsGet('et_c',{apiKey:''});
+
+function saveW(){lsSet('et_w',WW)}
+function saveI(){lsSet('et_i',II)}
+function saveH(){lsSet('et_h',HH)}
+function saveC(){lsSet('et_c',CF)}
+
+/* ====== UTILS ====== */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+var _toastT;
+function toast(msg,ms){
+  ms=ms||2800;
+  var e=document.getElementById('tst');
+  e.textContent=msg;e.classList.add('on');
+  clearTimeout(_toastT);_toastT=setTimeout(function(){e.classList.remove('on')},ms);
+}
+function fmtDate(iso){
+  if(!iso)return'';
+  var d=new Date(iso);
+  return d.toLocaleDateString('ro-RO',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'});
+}
+function fmtInt(days){
+  if(!days||days===0)return'azi';
+  if(days===1)return'1 zi';
+  if(days<30)return days+' zile';
+  if(days<365)return Math.round(days/30)+' luni';
+  return Math.round(days/365)+' ani';
+}
+function show(id){document.getElementById(id).style.display=''}
+function hide(id){document.getElementById(id).style.display='none'}
+
+/* ====== TABS ====== */
+document.querySelectorAll('.tb').forEach(function(b){
+  b.addEventListener('click',function(){
+    var tab=b.dataset.tab;
+    document.querySelectorAll('.tb').forEach(function(x){x.classList.remove('on')});
+    document.querySelectorAll('.tp').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    document.getElementById('tab-'+tab).classList.add('on');
+    document.getElementById('cnt').scrollTop=0;
+    if(tab==='cuvinte')renderWords();
+    if(tab==='idiomuri')renderIdioms();
+    if(tab==='exersare')refreshDue();
+    if(tab==='istoric')renderHistory();
+    if(tab==='setari')refreshSettings();
+  });
+});
+function switchTab(tab){
+  document.querySelector('[data-tab="'+tab+'"]').click();
+}
+
+/* ====== GEMINI (1 request) ====== */
+function callGemini(prompt){
+  var key=CF.apiKey;
+  if(!key)return Promise.reject(new Error('Cheia API lipseste. Mergi la Setari.'));
+  return fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+key,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{responseMimeType:'application/json',temperature:0.3}})
+  }).then(function(res){
+    if(!res.ok)return res.json().catch(function(){return{}}).then(function(e){throw new Error((e&&e.error&&e.error.message)||'HTTP '+res.status)});
+    return res.json();
+  }).then(function(d){
+    return d.candidates[0].content.parts[0].text;
+  });
+}
+
+/* ====== AI FILL (1 request, all fields) ====== */
+function aiFillPrompt(word,type){
+  var isIdiom=type==='idioms';
+  return 'You are an English teacher for a Romanian student (A2-B1 level).\nFor the English '+
+    (isIdiom?'idiom':'word')+': "'+word+'"\n'+
+    'Return ONLY valid JSON (no markdown) with this exact structure:\n'+
+    '{"pronunciation":"phonetic as a Romanian speaker reads it, CAPS=stress (e.g. persevere->per-si-VIAR, schedule->SKE-djul)","definition":"clear B1-level English definition, 1-2 sentences","roMeaning":"Romanian translation/meaning","examples":["sentence 1","sentence 2","sentence 3"]}\n'+
+    'Pronunciation rules: use Romanian letter combos, CAPS for stress, practical and memorable.';
+}
+
+function aiFill(type){
+  var isW=type==='words';
+  var word=document.getElementById(isW?'w-word':'i-word').value.trim();
+  if(!word){toast('Scrie mai intai cuvantul/idiomul');return}
+  var btn=document.getElementById(isW?'btn-ai-w':'btn-ai-i');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Se genereaza...';
+  callGemini(aiFillPrompt(word,type)).then(function(raw){
+    var d=JSON.parse(raw);
+    if(d.pronunciation)document.getElementById(isW?'w-pron':'i-pron').value=d.pronunciation;
+    if(d.definition)document.getElementById(isW?'w-def':'i-def').value=d.definition;
+    if(d.roMeaning)document.getElementById(isW?'w-ro':'i-ro').value=d.roMeaning;
+    if(d.examples&&d.examples.length)document.getElementById(isW?'w-ex':'i-ex').value=d.examples.join('\n');
+    toast('Campurile au fost completate!');
+  }).catch(function(e){
+    toast('Eroare AI: '+e.message);
+  }).finally(function(){
+    btn.disabled=false;btn.innerHTML='&#10024; Completeaza cu AI';
+  });
+}
+
+function aiFillEdit(type){
+  var isW=type==='words';
+  var word=document.getElementById(isW?'w-ew':'i-ew').value.trim();
+  if(!word){toast('Scrie mai intai cuvantul/idiomul');return}
+  toast('Se genereaza...',1500);
+  callGemini(aiFillPrompt(word,type)).then(function(raw){
+    var d=JSON.parse(raw);
+    if(d.pronunciation)document.getElementById(isW?'w-ep':'i-ep').value=d.pronunciation;
+    if(d.definition)document.getElementById(isW?'w-ed':'i-ed').value=d.definition;
+    if(d.roMeaning)document.getElementById(isW?'w-er':'i-er').value=d.roMeaning;
+    if(d.examples&&d.examples.length)document.getElementById(isW?'w-ee':'i-ee').value=d.examples.join('\n');
+    toast('Campurile au fost completate!');
+  }).catch(function(e){toast('Eroare AI: '+e.message)});
+}
+
+/* ====== SUMMARY ====== */
+var S={url:'',summary:'',analysis:null,attempts:{},sessionId:null};
+
+function resetSummary(){
+  S={url:'',summary:'',analysis:null,attempts:{},sessionId:null};
+  var u=document.getElementById('r-url');if(u)u.value='';
+  var s=document.getElementById('r-sum');if(s)s.value='';
+  document.getElementById('r-err').style.display='none';
+  show('rp1');hide('rp2');hide('rp3');
+}
+
+function checkSummary(){
+  var url=document.getElementById('r-url').value.trim();
+  var sum=document.getElementById('r-sum').value.trim();
+  var errEl=document.getElementById('r-err');
+  if(!sum){errEl.textContent='Scrie mai intai rezumatul tau.';errEl.style.display='';return}
+  if(!CF.apiKey){errEl.textContent='Cheia API lipseste. Mergi la Setari.';errEl.style.display='';return}
+  var btn=document.getElementById('btn-chk');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Se analizeaza...';
+  errEl.style.display='none';
+  S={url:url,summary:sum,analysis:null,attempts:{},sessionId:null};
+  var prompt='You are an English teacher for a Romanian student at A2-B1 level aiming for B2.\n'+
+    'Analyze this English text carefully for grammar, vocabulary, and clarity errors.\n'+
+    'Student text:\n---\n'+sum+'\n---\n'+
+    'Return ONLY valid JSON:\n'+
+    '{"mistakes":[{"wrong":"exact substring from student text","right":"corrected phrase","explanation":"simple B1 explanation","type":"wrong_word|word_order|article|tense|preposition|spelling|punctuation|other"}],'+
+    '"correctedSummary":"full corrected version",'+
+    '"patterns":["pattern 1","pattern 2","pattern 3"],'+
+    '"vocabularyGaps":[{"word":"better_word","example":"example sentence"}],'+
+    '"missedContent":""}\n'+
+    'Rules: "wrong" must be exact copy-paste from student text. Only real errors. Simple B1 explanations. 3-6 vocab suggestions.';
+  callGemini(prompt).then(function(raw){
+    var a;
+    try{a=JSON.parse(raw)}catch(e){
+      document.getElementById('r-err').textContent='JSON invalid:\n'+raw.slice(0,400);
+      document.getElementById('r-err').style.display='';
+      return;
+    }
+    S.analysis=a;
+    var sess={id:uid(),date:new Date().toISOString(),url:url,userSummary:sum,correctedSummary:a.correctedSummary||'',mistakesCount:(a.mistakes||[]).length,fixedCount:0};
+    HH.unshift(sess);
+    if(HH.length>50)HH.splice(50);
+    saveH();
+    S.sessionId=sess.id;
+    showHL();
+  }).catch(function(e){
+    document.getElementById('r-err').textContent='Eroare API: '+e.message;
+    document.getElementById('r-err').style.display='';
+  }).finally(function(){
+    btn.disabled=false;btn.innerHTML='&#10024; Verifica greseli';
+  });
+}
+
+/* Build highlighted text with teacher corrections */
+function buildHL(text,mistakes){
+  var ranges=[];
+  mistakes.forEach(function(m,i){
+    if(!m.wrong)return;
+    var lo=text.toLowerCase(),mlo=m.wrong.toLowerCase(),pos=0;
+    while(true){var idx=lo.indexOf(mlo,pos);if(idx===-1)break;ranges.push({start:idx,end:idx+m.wrong.length,mi:i});pos=idx+1}
+  });
+  ranges.sort(function(a,b){return a.start-b.start});
+  var clean=[],last=-1;
+  ranges.forEach(function(r){if(r.start>=last){clean.push(r);last=r.end}});
+  var html='',cur=0;
+  clean.forEach(function(r){
+    html+=esc(text.slice(cur,r.start));
+    var att=S.attempts[r.mi],m=mistakes[r.mi];
+    if(att){
+      /* Teacher correction: struck wrong + correct in green */
+      html+='<span class="tc-blk" title="'+esc(m.explanation)+'">'+
+        '<span class="tc-w">'+esc(text.slice(r.start,r.end))+'</span>'+
+        '<span class="tc-r"> '+esc(m.right)+'</span>'+
+        '</span>';
+    }else{
+      html+='<span class="mm" data-mi="'+r.mi+'">'+esc(text.slice(r.start,r.end))+'</span>';
+    }
+    cur=r.end;
+  });
+  return html+esc(text.slice(cur));
+}
+
+function rebuildHL(){
+  var html=buildHL(S.summary,S.analysis.mistakes||[]);
+  var el=document.getElementById('r-hltext');
+  el.innerHTML=html;
+  el.querySelectorAll('.mm').forEach(function(sp){
+    sp.addEventListener('click',function(){openMP(parseInt(sp.dataset.mi))});
+  });
+}
+
+function showHL(){
+  hide('rp1');show('rp2');hide('rp3');
+  var mc=(S.analysis.mistakes||[]).length;
+  document.getElementById('r-mcnt').textContent=mc===0?'Fara greseli':(mc+' greseli');
+  rebuildHL();
+}
+
+/* Mistake panel */
+function openMP(mi){
+  var m=S.analysis.mistakes[mi];
+  var att=S.attempts[mi];
+  document.getElementById('mp-ttl').textContent=m.type?'Greseala: '+m.type.replace(/_/g,' '):'Corecteaza greseala';
+  var html='';
+  if(att){
+    /* Already corrected - show summary */
+    html='<div class="cxs" style="background:var(--rusts)"><div class="lbl2" style="color:var(--rust)">AI SCRIS</div><span class="stk">'+esc(m.wrong)+'</span></div>'+
+      '<div class="cxs" style="background:var(--grns)"><div class="lbl2" style="color:var(--grn)">FORMA CORECTA</div><span class="crt" style="font-size:1.05rem">'+esc(m.right)+'</span></div>'+
+      '<div class="cxs"><div class="lbl2">EXPLICATIE</div>'+esc(m.explanation)+'</div>';
+    if(att.correct){
+      html='<div class="okb" style="margin:0 0 10px">&#10003; Ai corectat corect: <strong>'+esc(att.attempt)+'</strong></div>'+html;
+    }
+    html+='<button class="btn bs bfw mt8" onclick="closeMP()">Inchide</button>';
+  }else{
+    html='<div class="cxs"><div class="lbl2">TU AI SCRIS</div><span style="color:var(--rust);font-weight:600">'+esc(m.wrong)+'</span></div>'+
+      '<div class="fg mt8"><label>Cum crezi ca e corect?</label><input type="text" id="mp-inp" value="'+esc(m.wrong)+'" autocomplete="off" autocorrect="off" spellcheck="true"></div>'+
+      '<div class="row g10">'+
+      '<button class="btn bp" onclick="submitAtt('+mi+')" style="flex:1">Verifica</button>'+
+      '<button class="btn bs" onclick="skipM('+mi+')">Arata raspunsul</button>'+
+      '</div>';
+  }
+  document.getElementById('mp-bd').innerHTML=html;
+  document.getElementById('mpo').classList.add('on');
+  document.getElementById('mp').classList.add('on');
+  if(!att)setTimeout(function(){var i=document.getElementById('mp-inp');if(i)i.focus()},360);
+}
+
+function submitAtt(mi){
+  var m=S.analysis.mistakes[mi];
+  var val=(document.getElementById('mp-inp')||{value:''}).value.trim();
+  if(!val)return;
+  var correct=val.toLowerCase()===m.right.toLowerCase();
+  S.attempts[mi]={attempt:val,correct:correct,skipped:false};
+  if(correct){var sess=HH.find(function(h){return h.id===S.sessionId});if(sess){sess.fixedCount=(sess.fixedCount||0)+1;saveH()}}
+  rebuildHL();openMP(mi);
+}
+function skipM(mi){
+  S.attempts[mi]={attempt:S.analysis.mistakes[mi].wrong,correct:false,skipped:true};
+  rebuildHL();openMP(mi);
+}
+function closeMP(){
+  document.getElementById('mp').classList.remove('on');
+  document.getElementById('mpo').classList.remove('on');
+}
+
+function showAnalysis(){
+  hide('rp1');hide('rp2');show('rp3');
+  var a=S.analysis,mistakes=a.mistakes||[];
+  document.getElementById('an-cor').textContent=a.correctedSummary||'';
+  document.getElementById('an-mc').textContent=mistakes.length;
+  var mEl=document.getElementById('an-ml');
+  if(!mistakes.length){mEl.innerHTML='<p class="muted">Nicio greseala! &#127881;</p>'}
+  else{mEl.innerHTML=mistakes.map(function(m){
+    return '<div class="cxs" style="margin-bottom:8px"><div class="row g8" style="margin-bottom:5px"><span class="tag">'+esc(m.type||'')+'</span></div>'+
+      '<p style="margin:0 0 4px"><span class="stk">'+esc(m.wrong)+'</span> &rarr; <span class="crt">'+esc(m.right)+'</span></p>'+
+      '<p class="small muted" style="margin:0">'+esc(m.explanation)+'</p></div>';
+  }).join('')}
+  var pEl=document.getElementById('an-pat');
+  var pats=a.patterns||[];
+  if(!pats.length){pEl.innerHTML='<p class="muted">Nicio observatie speciala.</p>'}
+  else{pEl.innerHTML=pats.map(function(p,i){
+    return '<div class="row g10" style="align-items:flex-start;margin-bottom:8px">'+
+      '<span style="width:22px;height:22px;border-radius:50%;background:var(--teals);color:var(--teal);font-size:.72rem;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">'+
+      (i+1)+'</span><span style="font-size:.93rem">'+esc(p)+'</span></div>';
+  }).join('')}
+  var vEl=document.getElementById('an-voc');
+  var vocab=a.vocabularyGaps||[];
+  if(!vocab.length){vEl.innerHTML='<p class="muted">Vocabularul de baza este bun.</p>'}
+  else{vEl.innerHTML=vocab.map(function(v){
+    return '<div class="cxs" style="margin-bottom:8px">'+
+      '<div class="rsb" style="margin-bottom:5px">'+
+      '<strong style="font-size:1rem;color:var(--teal)">'+esc(v.word)+'</strong>'+
+      '<button class="btn bp bsm" onclick="addVocab(\''+esc(v.word).replace(/\\/g,'\\\\')+'\',\''+esc(v.example).replace(/\\/g,'\\\\')+'\')">+ Adauga</button>'+
+      '</div><p class="small" style="font-style:italic;color:var(--ink2);margin:0">'+esc(v.example)+'</p></div>';
+  }).join('')}
+  var missed=a.missedContent||'';
+  document.getElementById('an-misc').style.display=missed.trim()?'':'none';
+  document.getElementById('an-miss').textContent=missed;
+  document.getElementById('cnt').scrollTop=0;
+}
+
+/* Add vocab from analysis with AI auto-fill */
+function addVocab(word,example){
+  switchTab('cuvinte');
+  openAdd('words');
+  document.getElementById('w-word').value=word;
+  document.getElementById('w-ex').value=example;
+  document.getElementById('cnt').scrollTop=0;
+  /* Auto-trigger AI fill */
+  var btn=document.getElementById('btn-ai-w');
+  if(btn)btn.disabled=true;
+  if(btn)btn.innerHTML='<span class="spin"></span> Se genereaza...';
+  toast('Se completeaza campurile cu AI...',2500);
+  callGemini(aiFillPrompt(word,'words')).then(function(raw){
+    var d=JSON.parse(raw);
+    if(d.pronunciation)document.getElementById('w-pron').value=d.pronunciation;
+    if(d.definition)document.getElementById('w-def').value=d.definition;
+    if(d.roMeaning)document.getElementById('w-ro').value=d.roMeaning;
+    if(d.examples&&d.examples.length){
+      var exList=[example];
+      d.examples.forEach(function(e){if(e!==example)exList.push(e)});
+      document.getElementById('w-ex').value=exList.slice(0,4).join('\n');
+    }
+    toast('Cuvantul a fost completat complet!');
+  }).catch(function(e){
+    toast('AI indisponibil. Completeaza manual.');
+  }).finally(function(){
+    if(btn){btn.disabled=false;btn.innerHTML='&#10024; Completeaza cu AI'}
+  });
+}
+
+/* ====== WORDS & IDIOMS ====== */
+function pfx(t){return t==='words'?'w':'i'}
+
+function openAdd(type){
+  var addId=type==='words'?'aw-form':'ai-form';
+  var editId=type==='words'?'ew-form':'ei-form';
+  document.getElementById(addId).style.display='';
+  document.getElementById(editId).style.display='none';
+  var p=pfx(type);
+  ['word','def','ro','pron','ex'].forEach(function(f){var el=document.getElementById(p+'-'+f);if(el)el.value=''});
+  setTimeout(function(){var form=document.getElementById(addId);if(form)form.scrollIntoView({behavior:'smooth',block:'start'})},80);
+}
+function cancelAdd(type){document.getElementById(type==='words'?'aw-form':'ai-form').style.display='none'}
+
+function saveItem(type){
+  var p=pfx(type);
+  var word=document.getElementById(p+'-word').value.trim();
+  if(!word){toast('Completeaza cel putin cuvantul');return}
+  var item={
+    id:uid(),word:word,
+    definition:document.getElementById(p+'-def').value.trim(),
+    roMeaning:document.getElementById(p+'-ro').value.trim(),
+    pronunciation:document.getElementById(p+'-pron').value.trim(),
+    examples:document.getElementById(p+'-ex').value.split('\n').map(function(s){return s.trim()}).filter(Boolean),
+    ease:2.5,interval:0,nextReview:new Date().toISOString(),createdAt:new Date().toISOString()
+  };
+  if(type==='words'){WW.unshift(item);saveW();renderWords()}
+  else{II.unshift(item);saveI();renderIdioms()}
+  cancelAdd(type);
+  toast((type==='words'?'Cuvantul':'Idiomul')+' a fost salvat!');
+}
+
+function openEdit(type,id){
+  var items=type==='words'?WW:II;
+  var item=null;
+  for(var i=0;i<items.length;i++){if(items[i].id===id){item=items[i];break}}
+  if(!item)return;
+  var p=pfx(type);
+  document.getElementById(type==='words'?'aw-form':'ai-form').style.display='none';
+  document.getElementById(type==='words'?'ew-form':'ei-form').style.display='';
+  document.getElementById(p+'-eid').value=id;
+  document.getElementById(p+'-ew').value=item.word||'';
+  document.getElementById(p+'-ep').value=item.pronunciation||'';
+  document.getElementById(p+'-ed').value=item.definition||'';
+  document.getElementById(p+'-er').value=item.roMeaning||'';
+  document.getElementById(p+'-ee').value=(item.examples||[]).join('\n');
+  var f=document.getElementById(type==='words'?'ew-form':'ei-form');
+  if(f)f.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function cancelEdit(type){document.getElementById(type==='words'?'ew-form':'ei-form').style.display='none'}
+
+function updateItem(type){
+  var p=pfx(type);
+  var id=document.getElementById(p+'-eid').value;
+  var items=type==='words'?WW:II;
+  var idx=-1;
+  for(var i=0;i<items.length;i++){if(items[i].id===id){idx=i;break}}
+  if(idx===-1)return;
+  var word=document.getElementById(p+'-ew').value.trim();
+  if(!word){toast('Campul cuvant nu poate fi gol');return}
+  items[idx]=Object.assign({},items[idx],{
+    word:word,
+    pronunciation:document.getElementById(p+'-ep').value.trim(),
+    definition:document.getElementById(p+'-ed').value.trim(),
+    roMeaning:document.getElementById(p+'-er').value.trim(),
+    examples:document.getElementById(p+'-ee').value.split('\n').map(function(s){return s.trim()}).filter(Boolean)
+  });
+  if(type==='words'){saveW();renderWords()}else{saveI();renderIdioms()}
+  cancelEdit(type);toast('Actualizat!');
+}
+
+function deleteItem(type,id){
+  if(!confirm('Stergi '+(type==='words'?'cuvantul':'idiomul')+'?'))return;
+  if(type==='words'){
+    var newW=[];for(var i=0;i<WW.length;i++){if(WW[i].id!==id)newW.push(WW[i])}
+    WW=newW;saveW();renderWords();
+  }else{
+    var newI=[];for(var i=0;i<II.length;i++){if(II[i].id!==id)newI.push(II[i])}
+    II=newI;saveI();renderIdioms();
+  }
+  toast('Sters');
+}
+
+function srsStatus(item){
+  if(!item.interval||item.interval===0)return{lbl:'Nou',cls:'bnew'};
+  if(new Date(item.nextReview)<=new Date())return{lbl:'De revazut',cls:'bdue'};
+  if(item.interval<7)return{lbl:'Invatare',cls:'blrn'};
+  return{lbl:'Recenzie',cls:'brev'};
+}
+
+function renderItemList(items,cid,type){
+  var el=document.getElementById(cid);
+  if(!items.length){
+    el.innerHTML='<div class="empty"><div class="ei">'+(type==='words'?'&#128218;':'&#128172;')+'</div><p>Nu ai '+(type==='words'?'cuvinte':'idiomuri')+' salvate inca.</p></div>';
+    return;
+  }
+  el.innerHTML=items.map(function(item){
+    var s=srsStatus(item);
+    var exHtml=(item.examples||[]).map(function(e){return'<div class="exl">&bull; '+esc(e)+'</div>'}).join('');
+    var id=esc(item.id);
+    return '<div class="wc"><div class="wch" onclick="toggleWC(\''+id+'\')">'+
+      '<div style="flex:1;min-width:0"><div class="wcw">'+esc(item.word)+'</div>'+(item.roMeaning?'<div class="wcro">'+esc(item.roMeaning)+'</div>':'')+'</div>'+
+      (item.pronunciation?'<div class="wcp">'+esc(item.pronunciation)+'</div>':'')+
+      '<span class="bdg '+s.cls+'">'+s.lbl+'</span></div>'+
+      '<div class="wcb" id="wb-'+id+'">'+
+      (item.definition?'<div class="lbl">Definitie</div><div style="font-size:.93rem">'+esc(item.definition)+'</div>':'')+
+      (item.pronunciation?'<div class="lbl">Pronuntie</div><div style="font-family:\'JetBrains Mono\',monospace;color:var(--teal2);font-size:.87rem">'+esc(item.pronunciation)+'</div>':'')+
+      (exHtml?'<div class="lbl">Exemple</div>'+exHtml:'')+ 
+      '<div class="lbl">SRS</div><div class="small muted">Interval: '+fmtInt(item.interval||0)+' &middot; Ease: '+((item.ease||2.5).toFixed(1))+' &middot; Urmator: '+((!item.interval||item.interval===0)?'azi':fmtDate(item.nextReview))+'</div>'+
+      '<div class="row g10 mt8">'+
+      '<button class="btn bs bsm" style="flex:1" onclick="openEdit(\''+type+'\',\''+id+'\')">&#9999; Editeaza</button>'+
+      '<button class="btn br bsm" onclick="deleteItem(\''+type+'\',\''+id+'\')">&#128465; Sterge</button>'+
+      '</div></div></div>';
+  }).join('');
+}
+
+function toggleWC(id){var b=document.getElementById('wb-'+id);if(b)b.classList.toggle('on')}
+function renderWords(){
+  var q=(document.getElementById('ws-srch')?.value||'').toLowerCase();
+  var f=q?WW.filter(function(w){return w.word.toLowerCase().indexOf(q)!==-1||(w.roMeaning||'').toLowerCase().indexOf(q)!==-1||(w.definition||'').toLowerCase().indexOf(q)!==-1}):WW;
+  renderItemList(f,'wlist','words');
+}
+function renderIdioms(){
+  var q=(document.getElementById('is-srch')?.value||'').toLowerCase();
+  var f=q?II.filter(function(i){return i.word.toLowerCase().indexOf(q)!==-1||(i.roMeaning||'').toLowerCase().indexOf(q)!==-1||(i.definition||'').toLowerCase().indexOf(q)!==-1}):II;
+  renderItemList(f,'ilist','idioms');
+}
+
+/* ====== SM-2 ====== */
+function applyGrade(item,g){
+  var ease=item.ease||2.5,interval=item.interval||0,base=interval===0?1:interval;
+  if(g===0){ease=Math.max(1.3,ease-0.20);interval=0}
+  else if(g===1){ease=Math.max(1.3,ease-0.15);interval=Math.max(1,Math.round(base*1.2))}
+  else if(g===2){interval=Math.max(2,Math.round(base*ease))}
+  else if(g===3){ease+=0.15;interval=Math.max(4,Math.round(base*ease*1.3))}
+  var next=new Date();
+  if(interval===0){next.setMinutes(next.getMinutes()+10)}
+  else{next.setDate(next.getDate()+interval);next.setHours(4,0,0,0)}
+  return Object.assign({},item,{ease:ease,interval:interval,nextReview:next.toISOString()});
+}
+function prevInts(item){
+  var sl=document.getElementById('g-slider');
+  if(sl){sl.value=2;updateGradeSlider()}
+}
+
+var G_LABELS=['Din nou','Greu','Mediu','Usor'];
+var G_COLORS=['var(--rust)','var(--amb)','#3a6ba8','var(--grn)'];
+var G_BG=['var(--rust)','var(--amb)','#3a6ba8','var(--grn)'];
+
+function updateGradeSlider(){
+  var sl=document.getElementById('g-slider');if(!sl)return;
+  var v=parseInt(sl.value);
+  var lbl=G_LABELS[v],col=G_COLORS[v];
+  var badge=document.getElementById('g-badge');
+  if(badge){badge.textContent='— '+lbl+' —';badge.style.color=col}
+  var intEl=document.getElementById('g-int');
+  if(intEl)intEl.textContent=v===0?'(azi)':PS.cur?'('+fmtInt(applyGrade(PS.cur,v).interval)+')':'';
+  var lblEl=document.getElementById('g-lbl');
+  if(lblEl)lblEl.textContent='Confirma: '+lbl;
+  var btn=document.getElementById('g-confirm');
+  if(btn)btn.style.background=G_BG[v];
+}
+
+function gradeFromSlider(){
+  var sl=document.getElementById('g-slider');if(!sl)return;
+  grade(parseInt(sl.value));
+}
+
+/* ====== PRACTICE ====== */
+var PS={queue:[],again:[],idx:0,cur:null,mode:'ro-en',answered:false,stats:{total:0,reviewed:0,again:0}};
+document.querySelectorAll('input[name="psc"]').forEach(function(r){r.addEventListener('change',refreshDue)});
+
+function refreshDue(){
+  var scope=document.querySelector('input[name="psc"]:checked')?.value||'all';
+  var now=new Date(),pool=[];
+  if(scope!=='idioms')pool=pool.concat(WW);
+  if(scope!=='words')pool=pool.concat(II);
+  var due=pool.filter(function(i){return new Date(i.nextReview)<=now});
+  var el=document.getElementById('p-due');if(!el)return;
+  if(!pool.length)el.textContent='Nu ai cuvinte/idiomuri adaugate inca.';
+  else if(!due.length)el.textContent='Nicio carte scadenta din '+pool.length+' total. Revino mai tarziu!';
+  else el.textContent=due.length+' carte'+(due.length>1?'':' ')+' scadente din '+pool.length+' total';
+}
+
+function startPractice(){
+  var scope=document.querySelector('input[name="psc"]:checked')?.value||'all';
+  var mode=document.getElementById('p-mode')?.value||'ro-en';
+  var now=new Date(),pool=[];
+  if(scope!=='idioms')pool=pool.concat(WW.map(function(w){return Object.assign({},w,{_src:'words'})}));
+  if(scope!=='words')pool=pool.concat(II.map(function(i){return Object.assign({},i,{_src:'idioms'})}));
+  var due=pool.filter(function(i){return new Date(i.nextReview)<=now});
+  if(!due.length){toast('Nicio carte scadenta! Revino mai tarziu.');return}
+  var queue=due.slice().sort(function(){return Math.random()-.5});
+  PS={queue:queue,again:[],idx:0,cur:null,mode:mode,answered:false,stats:{total:queue.length,reviewed:0,again:0}};
+  hide('p-setup');show('p-sess');hide('p-end');
+  nextCard();
+}
+
+function nextCard(){
+  if(PS.idx>=PS.queue.length){
+    if(PS.again.length){PS.queue=PS.queue.concat(PS.again);PS.again=[]}
+    else{endSession();return}
+  }
+  PS.cur=PS.queue[PS.idx];PS.answered=false;
+  document.getElementById('p-prog').textContent=(PS.idx+1)+' / '+PS.queue.length;
+  var ac=PS.again.length,ael=document.getElementById('p-again');
+  ael.style.display=ac>0?'':'none';
+  if(ac>0)ael.textContent=ac+' din nou';
+  var lbl=document.getElementById('p-lbl'),front=document.getElementById('p-front');
+  if(PS.mode==='ro-en'){lbl.textContent='Cum se spune in engleza?';front.textContent=PS.cur.roMeaning||'(fara traducere romana)'}
+  else if(PS.mode==='en-ro'){lbl.textContent='Ce inseamna in romana?';front.textContent=PS.cur.word}
+  else{lbl.textContent='Ce cuvant/idiom descrie aceasta definitie?';front.textContent=PS.cur.definition||'(fara definitie)'}
+  hide('p-rev');hide('p-fb');
+  show('p-inp-area');
+  var inp=document.getElementById('p-ans-inp');
+  if(inp){inp.value='';inp.disabled=false}
+  var bca=document.getElementById('btn-chk-a');
+  if(bca){bca.disabled=false;bca.style.display=''}
+  var pc=document.getElementById('pc');
+  if(pc){pc.style.animation='none';pc.offsetHeight;pc.style.animation=''}
+}
+
+function checkAnswer(){
+  if(PS.answered)return;
+  var inp=document.getElementById('p-ans-inp');
+  var val=(inp?.value||'').trim();
+  if(!val){toast('Scrie raspunsul tau mai intai');return}
+  PS.answered=true;
+  if(inp)inp.disabled=true;
+  var bca=document.getElementById('btn-chk-a');
+  if(bca)bca.style.display='none';
+  var correct_ans=PS.mode==='en-ro'?PS.cur.roMeaning:PS.cur.word;
+  var isOk=val.toLowerCase()===correct_ans.toLowerCase();
+  var fb=document.getElementById('p-fb');
+  if(isOk){
+    fb.innerHTML='<div class="pfb-ok"><div class="big">&#10003; Corect!</div><div style="margin-top:3px;font-size:.88rem;color:var(--grn)">Raspunsul tau: <strong>'+esc(val)+'</strong></div></div>';
+  }else{
+    fb.innerHTML='<div class="pfb-no"><div class="big">&#10007; Gresit</div><div style="margin-top:4px;font-size:.88rem">Ai scris: <span class="stk">'+esc(val)+'</span></div><div class="cor">'+esc(correct_ans)+'</div></div>';
+  }
+  show('p-fb');
+  /* Show full answer */
+  document.getElementById('pa-w').textContent=PS.cur.word;
+  document.getElementById('pa-p').textContent=PS.cur.pronunciation?'/ '+PS.cur.pronunciation+' /':'';
+  document.getElementById('pa-d').textContent=PS.cur.definition||'';
+  var exH=(PS.cur.examples||[]).map(function(e){return'<div class="ex">&bull; '+esc(e)+'</div>'}).join('');
+  if(PS.cur.roMeaning)exH+='<div style="margin-top:8px;font-size:.83rem;color:var(--ink2);font-weight:700">&#127479;&#127476; '+esc(PS.cur.roMeaning)+'</div>';
+  document.getElementById('pa-e').innerHTML=exH;
+  show('p-rev');prevInts(PS.cur);
+}
+
+function grade(g){
+  var card=PS.cur;if(!card)return;
+  var items=card._src==='words'?WW:II;
+  for(var i=0;i<items.length;i++){
+    if(items[i].id===card.id){items[i]=applyGrade(items[i],g);break}
+  }
+  if(card._src==='words')saveW();else saveI();
+  if(g===0){PS.again.push(card);PS.stats.again++}
+  PS.stats.reviewed++;PS.idx++;
+  nextCard();
+}
+
+function endSession(){
+  hide('p-sess');show('p-end');
+  var s=PS.stats;
+  document.getElementById('p-end-s').textContent='Am revazut '+s.reviewed+' carti.'+(s.again>0?' '+s.again+' au necesitat repetare.':' Toate parcurse!');
+}
+function confirmEnd(){if(confirm('Termini sesiunea?'))showSetup()}
+function showSetup(){show('p-setup');hide('p-sess');hide('p-end');refreshDue()}
+
+/* ====== HISTORY ====== */
+function renderHistory(){
+  var el=document.getElementById('hlist');
+  if(!HH.length){el.innerHTML='<div class="empty"><div class="ei">&#128336;</div><p>Nicio sesiune salvata inca.</p></div>';return}
+  el.innerHTML=HH.slice(0,50).map(function(s,i){
+    return '<div class="hi"><div class="hih" onclick="toggleH('+i+')">'+
+      '<div class="hid">'+fmtDate(s.date)+'</div>'+
+      '<div style="flex:1;min-width:0;padding:0 8px">'+(s.url?'<div class="small" style="color:var(--teal2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(s.url)+'</div>':'')+'</div>'+
+      '<div class="row g8"><span class="tag" style="background:var(--rusts);color:var(--rust)">'+(s.mistakesCount||0)+' greseli</span><span class="tag" style="background:var(--grns);color:var(--grn)">'+(s.fixedCount||0)+' fixate</span></div>'+
+      '</div><div class="hib" id="hb-'+i+'">'+
+      '<div class="lbl" style="margin-top:11px">REZUMATUL TAU</div>'+
+      '<div class="nb-display" style="font-size:.88rem;color:var(--ink2);background-image:none;padding-left:14px;min-height:0">'+esc(s.userSummary||'')+'</div>'+
+      (s.correctedSummary?'<div class="lbl" style="margin-top:11px;color:var(--teal)">VERSIUNEA CORECTATA</div><div class="nb-display" style="font-size:.88rem;color:var(--teal);background-image:none;padding-left:14px;min-height:0">'+esc(s.correctedSummary)+'</div>':'') +
+      '</div></div>';
+  }).join('');
+}
+function toggleH(i){var b=document.getElementById('hb-'+i);if(b)b.classList.toggle('on')}
+
+/* ====== SETTINGS ====== */
+function refreshSettings(){
+  var el=document.getElementById('s-key');if(el&&CF.apiKey)el.value=CF.apiKey;
+  var st=document.getElementById('s-stats');
+  if(st)st.textContent=WW.length+' cuvinte \u00b7 '+II.length+' idiomuri \u00b7 '+HH.length+' sesiuni salvate';
+}
+function saveKey(){
+  var key=(document.getElementById('s-key')?.value||'').trim();
+  if(!key){toast('Introdu o cheie valida');return}
+  CF.apiKey=key;saveC();toast('Cheia API salvata!');
+  document.getElementById('s-res').style.display='none';
+}
+function testKey(){
+  var key=(document.getElementById('s-key')?.value||'').trim();
+  if(!key){toast('Introdu mai intai cheia');return}
+  var resEl=document.getElementById('s-res');
+  resEl.style.display='';resEl.className='muted';resEl.textContent='Se testeaza...';
+  var prev=CF.apiKey;CF.apiKey=key;
+  callGemini('{"test":true}').then(function(){
+    resEl.className='okb';resEl.textContent='Cheia functioneaza! Gemini 2.5 Flash raspunde.';saveC();
+  }).catch(function(e){
+    resEl.className='errb';resEl.textContent='Eroare: '+e.message;CF.apiKey=prev;
+  });
+}
+function exportData(){
+  var d={words:WW,idioms:II,history:HH,exportedAt:new Date().toISOString()};
+  var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  var u=URL.createObjectURL(b);
+  var a=document.createElement('a');a.href=u;a.download='english-tutor-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  URL.revokeObjectURL(u);toast('Date exportate!');
+}
+function importData(input){
+  var file=input.files[0];if(!file)return;
+  var r=new FileReader();
+  r.onload=function(e){
+    try{
+      var d=JSON.parse(e.target.result);
+      if(d.words){WW=d.words;saveW()}
+      if(d.idioms){II=d.idioms;saveI()}
+      if(d.history){HH=d.history;saveH()}
+      toast('Date importate cu succes!');
+      renderWords();renderIdioms();renderHistory();refreshSettings();
+    }catch(err){toast('Eroare import: '+err.message)}
+    input.value='';
+  };r.readAsText(file);
+}
+function wipeData(){
+  if(!confirm('Esti sigur? Toate datele vor fi sterse!'))return;
+  if(!confirm('Ultima confirmare?'))return;
+  WW=[];II=[];HH=[];saveW();saveI();saveH();
+  toast('Toate datele au fost sterse.');
+  renderWords();renderIdioms();renderHistory();refreshSettings();
+}
+
+/* ====== INIT ====== */
+renderWords();renderIdioms();renderHistory();refreshDue();refreshSettings();
+if(!CF.apiKey)setTimeout(function(){toast('Mergi la Setari pentru a adauga cheia Gemini API',4500)},1000);
+</script>
+</body>
+</html>
