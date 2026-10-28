@@ -30,58 +30,80 @@ body{background:var(--paper);color:var(--text);font:16px/1.45 var(--sans);-webki
 header{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 28px;padding:18px clamp(14px,3vw,32px) 10px}
 h1{font:600 26px/1.1 var(--serif);color:var(--ink);margin:0;letter-spacing:-.01em}
 nav{display:flex;gap:4px;flex-wrap:wrap}
-nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:500 16px var(--sans);padding:8px 10px;min-height:44px;cursor:pointer}
+nav button{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--muted);font:500 16px var(--sans);padding:8px 10px;min-height:44px;cursor:pointer}
 nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
 .badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:4px;border-radius:10px;background:var(--margin);color:#fff;font-size:12px;line-height:20px;text-align:center}
 .badge:empty{display:none}
+#syncStatus{margin-left:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+#syncStatus::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+#syncStatus[data-s="ok"]::before{background:var(--ok)}
+#syncStatus[data-s="err"]{color:var(--bad)}
+#syncStatus[data-s="err"]::before{background:var(--bad)}
+#syncStatus[data-s="sync"]::before,#syncStatus[data-s="pending"]::before{background:var(--ink)}
 main{padding:0 clamp(14px,3vw,32px) 40px}
 section[hidden]{display:none}
 .panel{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:16px;margin-top:12px}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .grow{flex:1 1 180px}
-label.small{font-size:14px;color:var(--muted)}
+.muted{color:var(--muted)}
 input[type=text],input[type=password],textarea,select{font:inherit;color:var(--text);background:var(--sheet);border:1px solid var(--btn-line);border-radius:8px;padding:10px 12px;min-height:44px;width:100%}
-textarea{min-height:64px;resize:vertical}
-input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+textarea{min-height:110px;resize:vertical;font-size:15px}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
 button{font:500 15px var(--sans);color:var(--text);background:var(--btn);border:1px solid var(--btn-line);border-radius:8px;padding:9px 14px;min-height:44px;cursor:pointer}
 button.primary{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
 button.ghost{background:none;border-color:transparent;color:var(--muted)}
+button[aria-pressed="true"]{background:var(--chip);border-color:var(--ink);color:var(--ink)}
 button:disabled{opacity:.55;cursor:default}
-button.icon{min-width:40px;min-height:40px;padding:4px 8px;background:none;border-color:transparent;font-size:17px}
+button.icon{min-width:40px;min-height:40px;padding:4px 8px;background:none;border-color:transparent;font-size:17px;color:var(--muted)}
+button.accept{min-height:36px;padding:2px 10px;font-size:14px;color:var(--ok);border-color:var(--ok);background:none}
 .hint{color:var(--muted);font-size:14px;margin:8px 0 0}
+details summary{cursor:pointer;color:var(--ink);font-weight:500;min-height:32px;padding-top:4px}
+h2{font:600 19px var(--serif);color:var(--ink);margin:0 0 10px}
+
+/* Lista de cuvinte */
+.wordlist{list-style:none;margin:0;padding:0}
+.wordlist li{display:grid;grid-template-columns:44px minmax(0,1fr) minmax(0,1.3fr) auto;align-items:center;gap:8px;border-bottom:1px solid var(--rule);min-height:52px;padding:4px 0}
+.wordlist li:last-child{border-bottom:0}
+.wordlist li.empty{display:block;color:var(--muted);padding:16px 4px}
+.chk{display:flex;align-items:center;justify-content:center;min-height:44px;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--ink)}
+.w-en{font:18px/1.3 var(--serif);color:var(--ink)}
+.w-en u{text-decoration-color:var(--margin);text-decoration-thickness:2px;text-underline-offset:3px}
+.w-ro{font:16px/1.3 var(--serif);color:var(--text)}
+.w-act{display:flex}
+@media (max-width:600px){.wordlist li{grid-template-columns:44px 1fr auto}.w-ro{grid-column:2}.w-act{grid-row:1/span 2;grid-column:3}}
+
+/* Foaia: caiet dictando cu margine rosie */
 .seg{display:flex;flex-wrap:wrap;gap:4px;margin:14px 0 8px}
 .seg button{min-width:64px}
-.seg button[aria-pressed="true"]{background:var(--chip);border-color:var(--ink);color:var(--ink)}
-
-/* Foaia: semnatura vizuala, caiet dictando cu margine rosie */
 .sheetwrap{overflow-x:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;margin-top:8px}
 table.sheet{border-collapse:collapse;width:100%;min-width:900px}
 .sheet th{font:500 13px var(--sans);color:var(--muted);text-align:left;padding:10px 8px;border-bottom:2px solid var(--rule);white-space:nowrap}
 .sheet th.is-active{color:var(--ink)}
-.sheet td{border-bottom:1px solid var(--rule);padding:6px 8px;height:52px;vertical-align:middle;font:18px/1.25 var(--serif);color:var(--ink)}
+.sheet td{border-bottom:1px solid var(--rule);padding:6px 8px;height:54px;vertical-align:middle;font:18px/1.25 var(--serif);color:var(--ink)}
 .sheet .num{width:44px;color:var(--muted);font:13px var(--sans);text-align:right;border-right:2px solid var(--margin);padding-right:10px}
 .sheet td.hid span{color:var(--rule);letter-spacing:2px}
 .sheet td.cue{background:var(--chip)}
-.sheet td.val.ok{color:var(--ok)}
+.sheet td.val.ok,.sheet td.val.approx{color:var(--ok)}
 .sheet td.val.bad{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px}
 .sheet td.val.empty{color:var(--rule)}
 .sheet td.empty{font:15px var(--sans);color:var(--muted);height:auto;padding:24px 16px}
-.cellwrap{display:flex;align-items:center;gap:2px}
+.cellwrap{display:flex;align-items:center;gap:4px}
+.stem{white-space:nowrap;color:var(--text)}
 .sheet input.ans{font:18px var(--serif);color:var(--ink);border-color:var(--rule);min-height:42px;padding:6px 8px;min-width:120px}
+.sheet input.ans.prep{min-width:64px;width:76px;text-align:center}
 .sheet input.ans.ok{background:var(--ok-bg);border-color:var(--ok)}
+.sheet input.ans.approx{background:var(--ok-bg);border:1px dashed var(--ok)}
 .sheet input.ans.bad{background:var(--bad-bg);border-color:var(--bad)}
-.muted{color:var(--muted)}
 .reveal{font:15px var(--serif);color:var(--margin);padding:2px 4px 0}
 .score{font-weight:600;color:var(--ink)}
 
-/* Card de repetitie */
+/* Card */
 .card{max-width:640px;margin:16px auto 0;background:var(--sheet);border:1px solid var(--rule);border-left:3px solid var(--margin);border-radius:10px;padding:24px}
-.card .sentence{font:22px/1.45 var(--serif);color:var(--text);margin:0 0 16px}
+.card .face{font:20px/1.5 var(--serif);color:var(--text)}
+.card .back{margin-top:18px;padding-top:16px;border-top:1px dashed var(--rule);font:19px/1.5 var(--serif)}
+.card .back b{color:var(--ink)}
 .gap{display:inline-block;min-width:70px;border-bottom:2px solid var(--ink);color:var(--ink);text-align:center}
-.card .meta{color:var(--muted);font-size:15px;margin:4px 0}
-.card .word{font:600 26px var(--serif);color:var(--ink);margin:18px 0 2px}
-.card .pron{font-style:italic;color:var(--muted)}
-.card .tr{font:19px var(--serif);margin-top:8px}
 .verdict{margin-top:14px;padding:10px 12px;border-radius:8px;font-weight:500}
 .verdict.ok{background:var(--ok-bg);color:var(--ok)}
 .verdict.bad{background:var(--bad-bg);color:var(--bad)}
@@ -89,29 +111,14 @@ table.sheet{border-collapse:collapse;width:100%;min-width:900px}
 .grades button{display:flex;flex-direction:column;align-items:center;gap:2px}
 .grades small{color:var(--muted);font-size:12px}
 
-/* Propozitii */
-.sent-item{border-bottom:1px solid var(--rule);padding:14px 0}
-.sent-item:last-child{border-bottom:0}
-.sent-word{font:600 19px var(--serif);color:var(--ink)}
-.sent-word span{font:15px var(--sans);color:var(--muted);font-weight:400;margin-left:6px}
-.fb{margin-top:8px;padding:10px 12px;border-radius:8px;font-size:15px}
-.fb.ok{background:var(--ok-bg)}
-.fb.bad{background:var(--bad-bg)}
-.fb b{display:block;margin-bottom:2px}
-.fb .corr{font:17px var(--serif);color:var(--ink);margin:4px 0}
-
-/* Desen */
-.modal{position:fixed;inset:0;background:rgba(10,14,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
-.modal[hidden]{display:none}
-.modal-box{background:var(--sheet);border-radius:12px;padding:16px;width:min(720px,100%)}
-#pad{display:block;width:100%;height:260px;background:#fff;border:1px solid var(--btn-line);border-radius:8px;touch-action:none;margin:10px 0;background-image:linear-gradient(transparent 85%,#D9E1EC 85%,#D9E1EC 86%,transparent 86%);background-size:100% 52px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--sheet);padding:10px 16px;border-radius:8px;font-size:15px;max-width:90vw;z-index:30}
-.toast.err{background:var(--bad)}
+.toast.err{background:var(--bad);color:#fff}
 .toast[hidden]{display:none}
 dl.stats{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}
 dl.stats dt{color:var(--muted)}
 dl.stats dd{margin:0;font-weight:600}
-h2{font:600 19px var(--serif);color:var(--ink);margin:0 0 10px}
+.field{display:flex;flex-direction:column;gap:4px;flex:1 1 200px}
+.field span{font-size:13px;color:var(--muted)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -119,27 +126,48 @@ h2{font:600 19px var(--serif);color:var(--ink);margin:0 0 10px}
 <header>
   <h1>Caiet de vocabular</h1>
   <nav role="tablist">
-    <button role="tab" data-tab="sheet" aria-selected="true">Foaie</button>
+    <button role="tab" data-tab="words" aria-selected="true">Cuvinte</button>
+    <button role="tab" data-tab="learn" aria-selected="false">Învățare</button>
     <button role="tab" data-tab="review" aria-selected="false">Repetiție<span class="badge" id="dueBadge"></span></button>
-    <button role="tab" data-tab="sent" aria-selected="false">Propoziții</button>
-    <button role="tab" data-tab="data" aria-selected="false">Date și setări</button>
+    <button role="tab" data-tab="settings" aria-selected="false">Setări</button>
   </nav>
+  <span id="syncStatus" data-s="off">Doar local</span>
 </header>
 
 <main>
-<!-- FOAIE -->
-<section id="tab-sheet">
+<!-- CUVINTE -->
+<section id="tab-words">
   <form class="panel" id="addForm" autocomplete="off">
     <div class="row">
-      <input class="grow" type="text" id="newEn" lang="en" placeholder="Cuvânt în engleză, ex: thrive sau guilty [of]" autocapitalize="off" autocorrect="off" spellcheck="false">
-      <button class="primary" type="submit">Adaugă</button>
+      <input class="grow" type="text" id="newEn" lang="en" placeholder="Engleză, ex: shed sau to be guilty" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button type="button" id="prepToggle" aria-pressed="false">+ Prepoziție</button>
+      <input type="text" id="newPrep" lang="en" placeholder="ex: of" hidden style="width:110px" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <input class="grow" type="text" id="newRo" lang="ro" placeholder="Română (alternative separate cu /)" autocapitalize="off">
+      <button class="primary" type="submit" id="addBtn">Adaugă</button>
+      <button type="button" class="ghost" id="cancelEdit" hidden>Renunță</button>
     </div>
-    <div class="row" style="margin-top:8px">
-      <label class="small"><input type="checkbox" id="autoCard" checked> Generează cardul automat cu Gemini</label>
-    </div>
-    <p class="hint">Pentru expresii, pune între paranteze drepte partea pe care vrei s-o completezi: protest [against], guilty [of].</p>
+    <p class="hint">Mai multe traduceri corecte, în română sau engleză, le separi cu /: „a prospera / to flourish”. Cuvintele noi intră automat în învățare.</p>
+    <details style="margin-top:10px">
+      <summary>Adaugă mai multe deodată</summary>
+      <textarea id="bulk" lang="en" placeholder="shed=magazie&#10;carry through=sa duci la bun sfarsit&#10;to be guilty [of]=sa fii vinovat de" spellcheck="false" style="margin-top:8px"></textarea>
+      <div class="row" style="margin-top:8px"><button type="button" id="bulkAdd">Adaugă lista</button>
+      <span class="hint" style="margin:0">Câte un cuvânt pe rând. Prepoziția de completat stă între [ ].</span></div>
+    </details>
   </form>
 
+  <div class="panel">
+    <div class="row">
+      <input class="grow" type="text" id="search" placeholder="Caută în listă" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button id="selAll">Bifează tot</button>
+      <button id="selNone">Debifează tot</button>
+    </div>
+    <p class="hint" id="selCount"></p>
+    <ul class="wordlist" id="wordList"></ul>
+  </div>
+</section>
+
+<!-- INVATARE -->
+<section id="tab-learn" hidden>
   <div class="seg" id="colTabs" role="group" aria-label="Coloana activă">
     <button data-col="0">Vezi tot</button>
     <button data-col="2">2 RO</button>
@@ -148,387 +176,496 @@ h2{font:600 19px var(--serif);color:var(--ink);margin:0 0 10px}
     <button data-col="7">7 EN</button><button data-col="8">8 RO</button>
   </div>
   <div class="row">
-    <select id="rangeSel" style="width:auto">
-      <option value="20">Ultimele 20</option>
-      <option value="50">Ultimele 50</option>
-      <option value="all">Toate cuvintele</option>
-    </select>
-    <button id="checkCol">Verifică coloana</button>
-    <button id="trCol">Tradu golurile cu Gemini</button>
-    <button id="clearCol" class="ghost">Golește coloana</button>
-    <span id="sheetScore" class="score" aria-live="polite"></span>
+    <button id="checkCol" class="primary">Verifică coloana</button>
+    <button id="restart">Ia de la capăt</button>
+    <span id="learnScore" class="score" aria-live="polite"></span>
   </div>
   <div class="sheetwrap"><table class="sheet" id="sheet"></table></div>
 </section>
 
 <!-- REPETITIE -->
 <section id="tab-review" hidden>
-  <div class="row" style="margin-top:12px">
-    <span id="reviewInfo" class="hint" style="margin:0"></span>
-    <button id="genMissing">Generează cardurile lipsă</button>
-  </div>
+  <details class="panel" id="importBox">
+    <summary>Importă carduri</summary>
+    <textarea id="cardText" placeholder="Lipește aici cardurile, câte unul pe rând: față ; spate" spellcheck="false" style="margin-top:10px"></textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="primary" id="cardImport">Adaugă cardurile</button>
+      <button id="cardFileBtn">Din fișier .txt</button>
+      <input type="file" id="cardFile" accept=".txt,text/plain" hidden>
+    </div>
+  </details>
+  <p class="hint" id="reviewInfo"></p>
   <div id="reviewArea"></div>
 </section>
 
-<!-- PROPOZITII -->
-<section id="tab-sent" hidden>
+<!-- SETARI -->
+<section id="tab-settings" hidden>
   <div class="panel">
+    <h2>Salvare pe GitHub</h2>
     <div class="row">
-      <select id="sentCount" style="width:auto">
-        <option value="5">5 cuvinte</option>
-        <option value="10">10 cuvinte</option>
-      </select>
-      <button id="sentPick">Alege cuvinte noi</button>
-      <button id="sentCheck" class="primary">Verifică cu Gemini</button>
+      <label class="field"><span>Utilizator GitHub</span><input type="text" id="ghOwner" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
+      <label class="field"><span>Repository</span><input type="text" id="ghRepo" placeholder="caiet" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
+      <label class="field" style="flex:0 1 120px"><span>Branch</span><input type="text" id="ghBranch" placeholder="main" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
     </div>
-    <p class="hint">Scrie câte o propoziție în engleză cu fiecare cuvânt. Cu Apple Pencil scrii direct în câmp (Scribble).</p>
-  </div>
-  <div class="panel" id="sentArea"></div>
-</section>
-
-<!-- DATE -->
-<section id="tab-data" hidden>
-  <div class="panel">
-    <h2>Gemini</h2>
-    <div class="row">
-      <input class="grow" type="password" id="apiKey" placeholder="Cheia API Gemini" autocomplete="off">
-      <input class="grow" type="text" id="model" placeholder="Model, ex: gemini-2.5-flash" autocapitalize="off" spellcheck="false">
-      <button class="primary" id="saveSettings">Salvează setările</button>
+    <div class="row" style="margin-top:8px">
+      <label class="field"><span>Token</span><input type="password" id="ghToken" autocomplete="off"></label>
+      <button class="primary" id="ghSave" style="align-self:flex-end">Salvează și sincronizează</button>
     </div>
-    <p class="hint">Cheia rămâne doar în acest browser. Pe fiecare dispozitiv o introduci o singură dată.</p>
-    <div class="row" style="margin-top:12px">
-      <label class="small" for="trMode">Traducerea de pe card</label>
-      <select id="trMode" style="width:auto">
-        <option value="mine">A mea, din coloana 2</option>
-        <option value="gemini">A lui Gemini</option>
-      </select>
-    </div>
-    <p class="hint">Cu „A mea”, cardul se generează după ce completezi coloana 2, ca Gemini să facă propoziția pe sensul tău. Poți schimba oricând; cardurile existente se actualizează singure.</p>
+    <p class="hint">Cuvintele se salvează în cuvinte.txt, cardurile în carduri.txt, iar progresul repetițiilor în progres.json, toate în același repository. Tokenul rămâne doar pe acest dispozitiv.</p>
+    <p class="hint" id="ghDetail"></p>
   </div>
   <div class="panel">
-    <h2>Sincronizare iPad ↔ Mac</h2>
+    <h2>Copii de siguranță</h2>
     <div class="row">
-      <button id="exportJson" class="primary">Exportă backup</button>
-      <label class="small" style="display:flex;align-items:center;gap:8px">
-        <button type="button" id="importBtn">Importă backup</button>
-        <input type="file" id="importFile" accept=".json,application/json" hidden>
-      </label>
-    </div>
-    <p class="hint">Exportă pe un dispozitiv, salvează fișierul în iCloud Drive, apoi importă-l pe celălalt. Importul combină datele: păstrează versiunea mai nouă a fiecărui cuvânt și nu șterge nimic din ce există doar aici.</p>
-  </div>
-  <div class="panel">
-    <h2>Export</h2>
-    <div class="row">
-      <button id="exportXlsx">Exportă Excel</button>
-      <button id="exportNoji">Exportă pentru Noji</button>
+      <button id="dlWords">Descarcă cuvinte.txt</button>
+      <button id="dlCards">Descarcă carduri.txt</button>
     </div>
   </div>
   <div class="panel">
     <h2>Statistici</h2>
     <dl class="stats" id="stats"></dl>
-    <div class="row" style="margin-top:14px"><button class="ghost" id="wipe">Șterge toate datele de pe acest dispozitiv</button></div>
+    <div class="row" style="margin-top:14px">
+      <button class="ghost" id="wipeCards">Șterge toate cardurile</button>
+      <button class="ghost" id="wipeLocal">Reîncarcă totul de pe GitHub</button>
+    </div>
   </div>
 </section>
 </main>
-
-<div class="modal" id="drawModal" hidden>
-  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="drawTitle">
-    <div class="row" style="justify-content:space-between">
-      <h2 id="drawTitle" style="margin:0">Scrie cu Pencil-ul</h2>
-      <button class="ghost" id="drawClose">Închide</button>
-    </div>
-    <canvas id="pad"></canvas>
-    <div class="row" style="justify-content:flex-end">
-      <button id="drawClear">Șterge</button>
-      <button class="primary" id="drawRead">Recunoaște textul</button>
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
 'use strict';
-/* ---------- Stocare ---------- */
-const LS_KEY = 'caiet.v1', LS_SET = 'caiet.settings';
 const $ = s => document.querySelector(s);
-let db = loadDb();
-let settings = loadSettings();
-const state = { col: 2, checked: false, revealed: new Set(), review: null, sent: { ids: [], results: null } };
-
-function loadDb(){
-  try { const d = JSON.parse(localStorage.getItem(LS_KEY)); if (d && Array.isArray(d.words)) { d.deleted = d.deleted || []; return d; } } catch(e){}
-  return { words: [], deleted: [] };
-}
-function loadSettings(){
-  let s = {}; try { s = JSON.parse(localStorage.getItem(LS_SET)) || {}; } catch(e){}
-  if (!s.model) s.model = 'gemini-2.5-flash';
-  if (!s.trMode) s.trMode = 'mine';
-  return s;
-}
-function save(){
-  try { localStorage.setItem(LS_KEY, JSON.stringify(db)); }
-  catch(e){ toast('Nu am putut salva datele: ' + e.message, true); }
-}
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const LS = 'caiet.v2', LS_GH = 'caiet.github';
+const F_WORDS = 'cuvinte.txt', F_CARDS = 'carduri.txt', F_PROG = 'progres.json';
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ui = { col: 2, checked: false, revealed: new Set(), editing: null, prepOn: false, review: null };
 
-/* ---------- Cuvinte ---------- */
-function parseEntry(raw){
-  raw = String(raw || '').trim().replace(/\s+/g, ' ');
-  const m = raw.match(/\[(.+?)\]/);
-  const display = raw.replace(/[\[\]]/g, '');
-  return { raw, display, target: m ? m[1].trim() : display };
-}
-function newWord(en, ro){
-  const now = Date.now();
-  return { id: uid(), en: parseEntry(en).raw, ro: ro.trim(), attempts: {}, card: null,
-           srs: { ef: 2.5, interval: 0, reps: 0, due: now }, createdAt: now, updatedAt: now };
-}
-const langOf = c => (c % 2 ? 'en' : 'ro');
-const original = (w, lang) => lang === 'en' ? parseEntry(w.en).display : w.ro;
+/* ================= Text si potriviri ================= */
+// Ignora litere mari/mici, diacritice, punctuatie si „to” / „a” / „să” de la inceput
 function norm(s){
   return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[\[\]]/g, '').replace(/[.!?"“”„'’]/g, '').replace(/\s+/g, ' ').trim();
+    .replace(/[\[\]_]/g, ' ').replace(/[.,!?;:"“”„'’()]/g, '').replace(/\s+/g, ' ').trim()
+    .replace(/^(to|a|sa) (?=\S)/, '');
 }
-function matches(answer, expected){
-  const a = norm(answer); if (!a) return false;
-  const alts = String(expected || '').split(/[,/;]|\bsau\b/).map(norm).filter(Boolean);
-  return alts.includes(a) || norm(expected) === a;
-}
-function touch(w){ w.updatedAt = Date.now(); }
-const cardTr = w => settings.trMode === 'gemini' ? (w.card?.translation || w.ro) : (w.ro || w.card?.translation || '');
-const canMakeCard = w => !w.card && (settings.trMode === 'gemini' || !!w.ro);
-
-/* ---------- Gemini ---------- */
-async function gemini(parts, json = true){
-  if (!settings.key) throw new Error('Adaugă cheia Gemini în „Date și setări”.');
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(settings.model) + ':generateContent';
-  const body = { contents: [{ role: 'user', parts }], generationConfig: { temperature: 0.4 } };
-  if (json) body.generationConfig.responseMimeType = 'application/json';
-  let res;
-  try {
-    res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': settings.key }, body: JSON.stringify(body) });
-  } catch(e){ throw new Error('Nu am putut contacta Gemini. Verifică conexiunea la internet.'); }
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.error?.message || ('Gemini a răspuns cu eroarea ' + res.status));
-  const text = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
-  if (!text) throw new Error('Gemini nu a trimis niciun text.');
-  if (!json) return text;
-  try { return JSON.parse(text.replace(/```json|```/g, '').trim()); }
-  catch(e){ throw new Error('Gemini a trimis un răspuns în format greșit. Încearcă din nou.'); }
-}
-
-const CARD_PROMPT = `Ești un asistent specializat în generarea de carduri de vocabular în stilul aplicației WordUp.
-Primești o listă de intrări. Fiecare are: "expression" (expresia completă în engleză), "target" (partea pe care utilizatorul trebuie s-o completeze) și "userTranslation" (traducerea dată de utilizator).
-Dacă "userTranslation" nu e gol, propoziția și definiția trebuie să folosească EXACT sensul din traducerea utilizatorului (ex: bank = mal → propoziție despre râu, nu despre bancă).
-Pentru fiecare intrare:
-1. "sentence": o propoziție contextuală naturală în engleză în care EXACT partea "target" este înlocuită cu ___ (trei liniuțe jos). Dacă target e doar o parte din expresie (ex: expression "guilty of", target "of"), restul expresiei apare normal în propoziție: "He was found guilty ___ fraud."
-2. "grammar": partea de vorbire în engleză (ex: verb, noun, adjective, phrasal verb, idiom, preposition).
-3. "definition": definiție scurtă în engleză a expresiei complete.
-4. "translation": traducerea în română. Dacă "userTranslation" e gol, dă tu traducerea; altfel pornește de la ea și corecteaz-o doar dacă e greșită.
-5. "pron": pronunția expresiei complete adaptată fonetic pentru un vorbitor de română, cum se citește, fără simboluri IPA (ex: down -> deaun, agency -> eijensi, thrive -> traiv).
-Returnează STRICT un array JSON de obiecte {"id","sentence","grammar","definition","translation","pron"}, păstrând "id" primit.`;
-
-async function generateCards(words){
-  const items = words.map(w => { const p = parseEntry(w.en); return { id: w.id, expression: p.display, target: p.target, userTranslation: w.ro }; });
-  const out = await gemini([{ text: CARD_PROMPT + '\n\nIntrări:\n' + JSON.stringify(items) }]);
-  const arr = Array.isArray(out) ? out : (out.cards || out.items || []);
-  let ok = 0;
-  for (const o of arr){
-    const w = db.words.find(x => x.id === o.id);
-    if (!w || !o.sentence) continue;
-    let sentence = String(o.sentence);
-    if (!sentence.includes('___')){
-      const t = parseEntry(w.en).target;
-      const re = new RegExp('\\b' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
-      if (!re.test(sentence)) continue;
-      sentence = sentence.replace(re, '___');
-    }
-    w.card = { sentence, grammar: o.grammar || '', definition: o.definition || '', translation: o.translation || w.ro, pron: o.pron || '' };
-    touch(w); ok++;
+function lev(a, b){
+  if (!a.length) return b.length; if (!b.length) return a.length;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
   }
-  save();
-  return ok;
+  return prev[b.length];
+}
+function similarity(a, b){
+  const r = 1 - lev(a, b) / Math.max(a.length, b.length);
+  const wa = new Set(a.split(' ')), wb = new Set(b.split(' '));
+  let inter = 0; wa.forEach(x => { if (wb.has(x)) inter++; });
+  return Math.max(r, 2 * inter / (wa.size + wb.size));
+}
+// 'ok' | 'approx' | 'bad' | '' (fara raspuns de referinta)
+function matchStatus(answer, expected){
+  const alts = String(expected || '').split('/').map(norm).filter(Boolean);
+  if (!alts.length) return '';
+  const a = norm(answer); if (!a) return 'bad';
+  if (alts.includes(a)) return 'ok';
+  for (const e of alts) if ((e.split(' ').length >= 3 || e.length >= 15) && similarity(a, e) >= 0.75) return 'approx';
+  return 'bad';
 }
 
-/* ---------- Tab-uri ---------- */
+/* ================= Cuvinte ================= */
+function parseEn(en){
+  const raw = String(en || '').trim().replace(/\s+/g, ' ');
+  const m = raw.match(/^(.*?)\[(.+?)\](.*)$/);
+  if (!m) return { raw, display: raw, prep: null, before: raw, after: '' };
+  const before = m[1].trim(), prep = m[2].trim(), after = m[3].trim();
+  return { raw, display: [before, prep, after].filter(Boolean).join(' '), prep, before, after };
+}
+function parseLine(l){
+  l = String(l).trim().replace(/;+\s*$/, '');
+  const i = l.indexOf('=');
+  if (i < 0) return { en: parseEn(l).raw, ro: '' };
+  return { en: parseEn(l.slice(0, i)).raw, ro: l.slice(i + 1).trim().replace(/\s*\/\s*/g, ' / ') };
+}
+const wordLine = w => `${w.en}=${w.ro}`;
+const wordCanon = l => { const w = parseLine(l); return w.en ? wordLine(w) : ''; };
+const keyOf = w => norm(parseEn(w.en).display);
+const wordKeyOfLine = l => keyOf(parseLine(l));
+
+/* ================= Carduri ================= */
+function splitCard(line){
+  const s = String(line);
+  for (let i = 0; i < s.length; i++){
+    if (s[i] === ';' && !/&[#a-zA-Z0-9]+$/.test(s.slice(Math.max(0, i - 10), i))) return [s.slice(0, i).trim(), s.slice(i + 1).trim()];
+  }
+  return null;
+}
+function cardCanon(l){ const p = splitCard(l); return p && p[0] && p[1] ? `${p[0]} ; ${p[1]}` : ''; }
+function cardKey(line){ let h = 5381; for (let i = 0; i < line.length; i++) h = ((h << 5) + h + line.charCodeAt(i)) | 0; return (h >>> 0).toString(36) + line.length.toString(36); }
+function linesOf(text){ return String(text || '').split(/\r?\n/).map(s => s.trim()).filter(s => s && !s.startsWith('#') && !s.startsWith('```')); }
+function htmlText(html){ const t = document.createElement('template'); t.innerHTML = String(html); return t.content.textContent || ''; }
+function sanitize(html){
+  const t = document.createElement('template'); t.innerHTML = String(html);
+  const keep = new Set(['B','I','U','BR','EM','STRONG','SMALL','SUB','SUP','SPAN']);
+  (function walk(n){
+    for (const ch of [...n.childNodes]){
+      if (ch.nodeType === 1){
+        if (ch.tagName === 'SCRIPT' || ch.tagName === 'STYLE'){ ch.remove(); continue; }
+        walk(ch);
+        if (!keep.has(ch.tagName)) ch.replaceWith(...ch.childNodes);
+        else [...ch.attributes].forEach(a => ch.removeAttribute(a.name));
+      } else if (ch.nodeType !== 3) ch.remove();
+    }
+  })(t.content);
+  const d = document.createElement('div'); d.appendChild(t.content); return d.innerHTML;
+}
+function answerOf(back){
+  const t = document.createElement('template'); t.innerHTML = back;
+  const b = t.content.querySelector('b,strong');
+  return (b ? b.textContent : (t.content.textContent || '').split('🔊')[0]).trim();
+}
+// corect daca scrii tot cuvantul, sau doar partea lipsa (ex: „of” din „guilty of”) cand restul e in propozitie
+function cardCorrect(ans, word, frontText){
+  const a = norm(ans), wd = norm(word); if (!a || !wd) return false;
+  if (a === wd) return true;
+  const at = a.split(' '), wt = wd.split(' ');
+  const ft = norm(frontText).split(' ');
+  const filler = new Set(['to','be','a','an','the','sb','sth','smb','smth','someone','something','one','oneself','ones']);
+  const inFront = t => filler.has(t) || ft.some(f => f.startsWith(t.length > 4 ? t.slice(0, t.length - 2) : t));
+  for (let i = 0; i + at.length <= wt.length; i++){
+    if (wt.slice(i, i + at.length).join(' ') !== a) continue;
+    if ([...wt.slice(0, i), ...wt.slice(i + at.length)].every(inFront)) return true;
+  }
+  return false;
+}
+
+/* ================= Stocare locala ================= */
+function emptyDb(){ return { words: [], cards: [], progress: {}, sel: [], att: {}, acc: {}, base: { words: null, cards: null } }; }
+function loadDb(){
+  try { const d = JSON.parse(localStorage.getItem(LS)); if (d && Array.isArray(d.words)) return Object.assign(emptyDb(), d); } catch(e){}
+  const d = emptyDb();
+  try { // preia datele din versiunea anterioara a aplicatiei
+    const old = JSON.parse(localStorage.getItem('caiet.v1'));
+    if (old && Array.isArray(old.words)){
+      const seen = new Set();
+      for (const w of old.words){
+        const nw = { en: parseEn(w.en).raw, ro: String(w.ro || '').trim() }; const k = keyOf(nw);
+        if (!nw.en || seen.has(k)) continue; seen.add(k); d.words.push(nw); d.sel.push(k);
+        if (w.card && w.card.sentence){
+          const p = parseEn(w.en), c = w.card;
+          const line = cardCanon(`${c.sentence}<br><br>🏷️ <i>${c.grammar || ''}</i><br>💡 <b>${c.definition || ''}</b> ; <b>${p.display}</b> 🔊 <i>/${c.pron || ''}/</i><br><br>🇷🇴 <b>${w.ro || c.translation || ''}</b>`);
+          if (line){ d.cards.push(line); if (w.srs) d.progress[cardKey(line)] = { ...w.srs, last: w.updatedAt || 1 }; }
+        }
+      }
+    }
+  } catch(e){}
+  return d;
+}
+let db = loadDb();
+function save(){ try { localStorage.setItem(LS, JSON.stringify(db)); } catch(e){ toast('Nu am putut salva local: ' + e.message, true); } }
+
+/* ================= GitHub ================= */
+function loadGh(){
+  let g = {}; try { g = JSON.parse(localStorage.getItem(LS_GH)) || {}; } catch(e){}
+  if (!g.owner && location.hostname.endsWith('.github.io')){
+    g.owner = location.hostname.split('.')[0];
+    g.repo = location.pathname.split('/').filter(Boolean)[0] || location.hostname;
+  }
+  g.branch = g.branch || 'main';
+  return g;
+}
+let gh = loadGh();
+const ghReady = () => !!(gh.owner && gh.repo && gh.token);
+const ghUrl = p => `https://api.github.com/repos/${encodeURIComponent(gh.owner)}/${encodeURIComponent(gh.repo)}/contents/${p}`;
+const ghHeaders = () => ({ 'Authorization': 'Bearer ' + gh.token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' });
+function b64enc(str){ const bytes = new TextEncoder().encode(str); let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(bin); }
+function b64dec(b64){ const bin = atob(String(b64).replace(/\s/g, '')); const bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
+function ghError(status, verb){
+  if (status === 401) return 'Tokenul nu e valid sau a expirat.';
+  if (status === 403) return 'Tokenul nu are drept de scriere. Verifică permisiunea Contents: Read and write.';
+  if (status === 404) return verb === 'write' ? 'Repository-ul nu există sau tokenul nu are acces la el.' : 'Nu găsesc repository-ul. Verifică utilizatorul și numele.';
+  return 'GitHub a răspuns cu eroarea ' + status + '.';
+}
+async function ghGet(path){
+  let r;
+  try { r = await fetch(ghUrl(path) + '?ref=' + encodeURIComponent(gh.branch), { headers: ghHeaders(), cache: 'no-store' }); }
+  catch(e){ throw new Error('Fără conexiune la GitHub.'); }
+  if (r.status === 404){
+    const repo = await fetch(`https://api.github.com/repos/${encodeURIComponent(gh.owner)}/${encodeURIComponent(gh.repo)}`, { headers: ghHeaders(), cache: 'no-store' }).catch(() => null);
+    if (repo && repo.ok) return { text: '', sha: null }; // fisierul inca nu exista
+    throw new Error(ghError(404, 'read'));
+  }
+  if (!r.ok) throw new Error(ghError(r.status, 'read'));
+  const j = await r.json();
+  return { text: b64dec(j.content || ''), sha: j.sha };
+}
+async function ghPut(path, text, sha, message){
+  const body = { message, content: b64enc(text), branch: gh.branch }; if (sha) body.sha = sha;
+  let r;
+  try { r = await fetch(ghUrl(path), { method: 'PUT', headers: { ...ghHeaders(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); }
+  catch(e){ throw new Error('Fără conexiune la GitHub.'); }
+  if (r.status === 409 || r.status === 422){ const e = new Error('Conflict de versiune pe GitHub.'); e.conflict = true; throw e; }
+  if (!r.ok) throw new Error(ghError(r.status, 'write'));
+}
+// combinare in 3 directii: ce s-a schimbat local fata de ultima sincronizare se aplica peste versiunea de pe GitHub
+function mergeLines(baseText, localLines, remoteText, keyFn, canon){
+  const toMap = arr => { const m = new Map(); for (const raw of arr){ const l = canon(raw); if (!l) continue; const k = keyFn(l); if (k) m.set(k, l); } return m; };
+  const local = toMap(localLines), res = toMap(linesOf(remoteText));
+  if (baseText === null){ for (const [k, l] of local) if (!res.has(k)) res.set(k, l); return [...res.values()]; }
+  const base = toMap(linesOf(baseText));
+  for (const [k, l] of local) if (base.get(k) !== l) res.set(k, l);
+  for (const k of base.keys()) if (!local.has(k)) res.delete(k);
+  return [...res.values()];
+}
+const toText = lines => lines.length ? lines.join('\n') + '\n' : '';
+let syncing = false, syncAgain = false, syncTimer = null;
+function setStatus(s, detail){
+  const el = $('#syncStatus'); el.dataset.s = s;
+  el.textContent = { off: 'Doar local', pending: 'Se salvează…', sync: 'Se sincronizează…', ok: 'Salvat pe GitHub', err: 'Eroare la salvare' }[s];
+  el.title = detail || '';
+  $('#ghDetail').textContent = s === 'ok' ? 'Ultima sincronizare: ' + new Date().toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' }) : (detail || '');
+}
+function scheduleSync(){ if (!ghReady()) return; setStatus('pending'); clearTimeout(syncTimer); syncTimer = setTimeout(sync, 2500); }
+async function sync(){
+  if (!ghReady()){ setStatus('off'); return; }
+  if (syncing){ syncAgain = true; return; }
+  syncing = true; clearTimeout(syncTimer); setStatus('sync');
+  try {
+    for (let attempt = 0; ; attempt++){
+      try { await syncOnce(); break; }
+      catch(e){ if (e.conflict && attempt < 2) continue; throw e; }
+    }
+    setStatus('ok');
+  } catch(e){ setStatus('err', e.message); toast(e.message, true); }
+  syncing = false;
+  if (syncAgain){ syncAgain = false; sync(); }
+}
+async function syncOnce(){
+  const rw = await ghGet(F_WORDS), rc = await ghGet(F_CARDS), rp = await ghGet(F_PROG);
+  const snapW = db.words.map(wordLine), snapC = [...db.cards]; // ce aveam local cand am inceput
+  const words = mergeLines(db.base.words, snapW, rw.text, wordKeyOfLine, wordCanon);
+  const cards = mergeLines(db.base.cards, snapC, rc.text, l => l, cardCanon);
+  let remoteProg = {}; try { remoteProg = rp.text ? JSON.parse(rp.text) : {}; } catch(e){}
+  const mergeProg = (a, b) => { const o = { ...a }; for (const [k, v] of Object.entries(b)) if (!o[k] || (v.last || 0) > (o[k].last || 0)) o[k] = v; return o; };
+  const prog = mergeProg(remoteProg, db.progress);
+  const wText = toText(words), cText = toText(cards), pText = JSON.stringify(prog, null, 1) + '\n';
+  if (wText !== rw.text) await ghPut(F_WORDS, wText, rw.sha, 'Actualizare cuvinte');
+  if (cText !== rc.text) await ghPut(F_CARDS, cText, rc.sha, 'Actualizare carduri');
+  if (pText !== rp.text && (rp.text || Object.keys(prog).length)) await ghPut(F_PROG, pText, rp.sha, 'Actualizare progres');
+  // pastreaza si ce ai modificat cat timp rula sincronizarea (se trimite la urmatoarea)
+  db.words = mergeLines(toText(snapW), db.words.map(wordLine), wText, wordKeyOfLine, wordCanon).map(parseLine);
+  db.cards = mergeLines(toText(snapC), db.cards, cText, l => l, cardCanon);
+  db.progress = mergeProg(prog, db.progress);
+  db.base = { words: wText, cards: cText };
+  const keys = new Set(db.words.map(keyOf)); db.sel = db.sel.filter(k => keys.has(k));
+  save();
+  if (toText(db.words.map(wordLine)) !== toText(snapW) || toText(db.cards) !== toText(snapC)) renderAll(); else renderBadge();
+}
+
+/* ================= Tab-uri ================= */
 document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 function showTab(name){
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name));
-  ['sheet','review','sent','data'].forEach(t => $('#tab-' + t).hidden = t !== name);
+  ['words', 'learn', 'review', 'settings'].forEach(t => $('#tab-' + t).hidden = t !== name);
+  if (name === 'learn') renderLearn();
   if (name === 'review') renderReview();
-  if (name === 'data') renderData();
-  if (name === 'sent') renderSent();
+  if (name === 'settings') renderSettings();
 }
-function renderAll(){ renderSheet(); renderBadge(); if (!$('#tab-review').hidden) renderReview(); }
+function renderAll(){
+  renderWords(); renderBadge();
+  if (!$('#tab-learn').hidden) renderLearn();
+  if (!$('#tab-review').hidden) renderReview();
+  if (!$('#tab-settings').hidden) renderSettings();
+}
 
-/* ---------- Foaia cu 8 coloane ---------- */
-function visibleWords(){
-  const all = [...db.words].sort((a, b) => a.createdAt - b.createdAt);
-  const r = $('#rangeSel').value;
-  return r === 'all' ? all : all.slice(-Number(r));
+/* ================= Sectiunea Cuvinte ================= */
+function renderWords(){
+  const q = norm($('#search').value), sel = new Set(db.sel);
+  const list = [...db.words].reverse().filter(w => !q || norm(parseEn(w.en).display + ' ' + w.ro).includes(q));
+  $('#wordList').innerHTML = list.length ? list.map(w => {
+    const k = keyOf(w), p = parseEn(w.en);
+    const en = p.prep ? [esc(p.before), `<u>${esc(p.prep)}</u>`, esc(p.after)].filter(Boolean).join(' ') : esc(p.display);
+    return `<li data-k="${esc(k)}"><label class="chk"><input type="checkbox" ${sel.has(k) ? 'checked' : ''} aria-label="În învățare"></label>`
+      + `<span class="w-en">${en}</span><span class="w-ro">${w.ro ? esc(w.ro) : '<span class="muted">fără traducere</span>'}</span>`
+      + `<span class="w-act"><button class="icon" data-act="edit" aria-label="Editează">✎</button><button class="icon" data-act="del" aria-label="Șterge">✕</button></span></li>`;
+  }).join('') : `<li class="empty">${db.words.length ? 'Niciun cuvânt nu se potrivește căutării.' : 'Încă nu ai cuvinte. Adaugă primul mai sus.'}</li>`;
+  $('#selCount').textContent = `${db.sel.length} din ${db.words.length} cuvinte în învățare`;
 }
-function cellHtml(w, c, k){
-  const lang = langOf(c), ref = original(w, lang);
-  if (!k){
-    if (c <= 2) return ref ? `<td>${esc(ref)}</td>` : '<td class="val empty">·</td>';
-    const a = w.attempts[c];
-    if (!a) return '<td class="val empty">·</td>';
-    if (!ref) return `<td class="val">${esc(a)}</td>`;
-    return `<td class="val ${matches(a, ref) ? 'ok' : 'bad'}">${esc(a)}</td>`;
+function setPrep(on, value = ''){
+  ui.prepOn = on; $('#prepToggle').setAttribute('aria-pressed', on);
+  $('#newPrep').hidden = !on; $('#newPrep').value = value;
+}
+function resetForm(){
+  ui.editing = null; $('#newEn').value = ''; $('#newRo').value = ''; setPrep(false);
+  $('#addBtn').textContent = 'Adaugă'; $('#cancelEdit').hidden = true;
+}
+function renameKey(oldK, newK){
+  if (oldK === newK) return;
+  db.sel = db.sel.map(k => k === oldK ? newK : k);
+  if (db.att[oldK]){ db.att[newK] = db.att[oldK]; delete db.att[oldK]; }
+  if (db.acc[oldK]){ db.acc[newK] = db.acc[oldK]; delete db.acc[oldK]; }
+}
+$('#prepToggle').addEventListener('click', () => { setPrep(!ui.prepOn); if (ui.prepOn) $('#newPrep').focus(); });
+$('#cancelEdit').addEventListener('click', resetForm);
+$('#addForm').addEventListener('submit', e => {
+  e.preventDefault();
+  let en = $('#newEn').value.trim().replace(/\s+/g, ' ');
+  const ro = $('#newRo').value.trim(), prep = ui.prepOn ? $('#newPrep').value.trim() : '';
+  if (!en){ toast('Scrie expresia în engleză.', true); return; }
+  if (en.includes('=')){ toast('Semnul = nu poate apărea în partea în engleză.', true); return; }
+  if (ui.prepOn && !prep){ toast('Scrie prepoziția sau oprește butonul Prepoziție.', true); return; }
+  if (prep) en = /_{2,}/.test(en) ? en.replace(/\s*_{2,}\s*/, ` [${prep}] `).trim() : `${en} [${prep}]`;
+  const w = parseLine(en + '=' + ro), k = keyOf(w);
+  const clash = db.words.find(x => keyOf(x) === k);
+  if (ui.editing !== null){
+    if (clash && k !== ui.editing){ toast(`„${parseEn(w.en).display}” există deja în listă.`, true); return; }
+    const i = db.words.findIndex(x => keyOf(x) === ui.editing);
+    if (i >= 0){ db.words[i] = w; renameKey(ui.editing, k); }
+  } else {
+    if (clash){ toast(`„${parseEn(w.en).display}” există deja în listă.`, true); return; }
+    db.words.push(w); db.sel.push(k);
   }
-  if (c === k){
-    // coloana 2 = traducerea ta, devine referinta pentru 4, 6, 8
-    const a = c === 2 ? (w.ro || '') : (w.attempts[c] || '');
-    let mark = '';
-    if (state.checked && c > 2 && ref) mark = matches(a, ref) ? 'ok' : 'bad';
-    const rev = state.revealed.has(w.id) ? `<div class="reveal">${esc(ref || 'Completează întâi coloana 2')}</div>` : '';
-    return `<td><div class="cellwrap"><input class="ans ${mark}" data-col="${c}" lang="${lang}" value="${esc(a)}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Coloana ${c}">`
-      + (c > 2 ? `<button class="icon" data-act="reveal" aria-label="Arată răspunsul">👁</button>` : '')
-      + (lang === 'ro' ? `<button class="icon" data-act="draw" aria-label="Scrie de mână">✏️</button>` : '')
-      + (c === 2 ? `<button class="icon" data-act="tr" aria-label="Tradu cu Gemini">🤖</button>` : '')
-      + (a ? `<button class="icon" data-act="clearcell" aria-label="Șterge celula">✕</button>` : '')
-      + `</div>${rev}</td>`;
+  save(); scheduleSync(); resetForm(); $('#newEn').focus(); renderWords();
+});
+$('#bulkAdd').addEventListener('click', () => {
+  const keys = new Set(db.words.map(keyOf)); let added = 0, dup = 0;
+  for (const l of linesOf($('#bulk').value)){
+    const w = parseLine(l); if (!w.en) continue;
+    const k = keyOf(w); if (keys.has(k)){ dup++; continue; }
+    keys.add(k); db.words.push(w); db.sel.push(k); added++;
   }
-  if (c === k - 1){
-    const cue = c <= 2 ? ref : (w.attempts[c] || ref);
-    return `<td class="cue">${cue ? esc(cue) : '<span class="muted">—</span>'}</td>`;
+  if (!added && !dup){ toast('Nu am găsit niciun rând de adăugat.', true); return; }
+  $('#bulk').value = ''; save(); scheduleSync(); renderWords();
+  toast(`Am adăugat ${added} cuvinte.` + (dup ? ` ${dup} existau deja.` : ''));
+});
+$('#search').addEventListener('input', renderWords);
+$('#wordList').addEventListener('change', e => {
+  if (!e.target.matches('input[type=checkbox]')) return;
+  const k = e.target.closest('li').dataset.k;
+  db.sel = db.sel.filter(x => x !== k); if (e.target.checked) db.sel.push(k);
+  save(); $('#selCount').textContent = `${db.sel.length} din ${db.words.length} cuvinte în învățare`;
+});
+$('#wordList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const k = b.closest('li').dataset.k, w = db.words.find(x => keyOf(x) === k); if (!w) return;
+  if (b.dataset.act === 'edit'){
+    const p = parseEn(w.en);
+    ui.editing = k;
+    if (p.prep && !p.after){ $('#newEn').value = p.before; setPrep(true, p.prep); } else { $('#newEn').value = p.raw; setPrep(false); }
+    $('#newRo').value = w.ro; $('#addBtn').textContent = 'Salvează'; $('#cancelEdit').hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' }); $('#newEn').focus();
   }
+  if (b.dataset.act === 'del' && confirm(`Ștergi „${parseEn(w.en).display}”?`)){
+    db.words = db.words.filter(x => x !== w); db.sel = db.sel.filter(x => x !== k);
+    delete db.att[k]; delete db.acc[k];
+    if (ui.editing === k) resetForm();
+    save(); scheduleSync(); renderWords();
+  }
+});
+function visibleKeys(){
+  const q = norm($('#search').value);
+  return db.words.filter(w => !q || norm(parseEn(w.en).display + ' ' + w.ro).includes(q)).map(keyOf);
+}
+$('#selAll').addEventListener('click', () => { const s = new Set(db.sel); visibleKeys().forEach(k => s.add(k)); db.sel = [...s]; save(); renderWords(); });
+$('#selNone').addEventListener('click', () => { const v = new Set(visibleKeys()); db.sel = db.sel.filter(k => !v.has(k)); save(); renderWords(); });
+
+/* ================= Invatare (8 coloane) ================= */
+const langOf = c => c % 2 ? 'en' : 'ro';
+const learnWords = () => { const s = new Set(db.sel); return db.words.filter(w => s.has(keyOf(w))); };
+const attOf = (k, c) => db.att[k]?.[c] || '';
+const withStem = (p, v) => [p.before, v, p.after].filter(Boolean).join(' ');
+function expectedOf(w, c){ const p = parseEn(w.en); if (c === 1) return p.display; if (c % 2 === 0) return w.ro; return p.prep || p.display; }
+function statusOf(w, k, c){ if (db.acc[k]?.[c]) return 'ok'; return matchStatus(attOf(k, c), expectedOf(w, c)); }
+function cueOf(w, k, c){
+  const p = parseEn(w.en);
+  if (c === 1) return p.display;
+  if (c % 2 === 0) return attOf(k, c) || w.ro;
+  return p.prep ? withStem(p, attOf(k, c) || p.prep) : (attOf(k, c) || p.display);
+}
+function cellHtml(w, k, c, col){
+  const p = parseEn(w.en), isPrep = c % 2 === 1 && c > 1 && !!p.prep;
+  if (!col){
+    if (c === 1) return `<td>${esc(p.display)}</td>`;
+    const a = attOf(k, c); if (!a) return '<td class="val empty">·</td>';
+    return `<td class="val ${statusOf(w, k, c)}">${esc(isPrep ? withStem(p, a) : a)}</td>`;
+  }
+  if (c === col){
+    const a = attOf(k, c), mark = ui.checked ? statusOf(w, k, c) : '';
+    const exp = isPrep ? withStem(p, p.prep) : (expectedOf(w, c) || 'fără traducere în listă');
+    return `<td><div class="cellwrap">`
+      + (isPrep && p.before ? `<span class="stem">${esc(p.before)}</span>` : '')
+      + `<input class="ans ${mark} ${isPrep ? 'prep' : ''}" data-col="${c}" lang="${langOf(c)}" value="${esc(a)}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Coloana ${c}">`
+      + (isPrep && p.after ? `<span class="stem">${esc(p.after)}</span>` : '')
+      + `<button class="icon" data-act="reveal" aria-label="Arată răspunsul">👁</button>`
+      + (a ? `<button class="icon" data-act="clear" aria-label="Șterge celula">✕</button>` : '')
+      + (mark === 'bad' ? `<button class="accept" data-act="accept">Accept</button>` : '')
+      + `</div>${ui.revealed.has(k) ? `<div class="reveal">${esc(exp)}</div>` : ''}</td>`;
+  }
+  if (c === col - 1){ const cue = cueOf(w, k, c); return `<td class="cue">${cue ? esc(cue) : '<span class="muted">—</span>'}</td>`; }
   return '<td class="hid"><span>•••</span></td>';
 }
-function renderSheet(){
-  const k = state.col, words = visibleWords();
-  document.querySelectorAll('#colTabs button').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.col) === k));
-  $('#checkCol').hidden = !k || k === 2;
-  $('#clearCol').hidden = !k;
-  $('#trCol').hidden = k !== 2;
+function renderLearn(){
+  const col = ui.col, words = learnWords();
+  document.querySelectorAll('#colTabs button').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.col) === col));
+  $('#checkCol').hidden = !col;
   let h = '<thead><tr><th class="num">#</th>';
-  for (let c = 1; c <= 8; c++){
-    const cls = k ? (c === k ? 'is-active' : c === k - 1 ? 'is-cue' : 'is-hidden') : '';
-    h += `<th class="${cls}">${c} ${langOf(c).toUpperCase()}</th>`;
-  }
-  if (!k) h += '<th></th>';
+  for (let c = 1; c <= 8; c++) h += `<th class="${col && c === col ? 'is-active' : ''}">${c} ${langOf(c).toUpperCase()}</th>`;
   h += '</tr></thead><tbody>';
   words.forEach((w, i) => {
-    h += `<tr data-id="${w.id}"><td class="num">${i + 1}</td>`;
-    for (let c = 1; c <= 8; c++) h += cellHtml(w, c, k);
-    if (!k) h += `<td><button class="icon" data-act="del" aria-label="Șterge cuvântul">✕</button></td>`;
+    const k = keyOf(w);
+    h += `<tr data-k="${esc(k)}"><td class="num">${i + 1}</td>`;
+    for (let c = 1; c <= 8; c++) h += cellHtml(w, k, c, col);
     h += '</tr>';
   });
-  if (!words.length) h += '<tr><td colspan="10" class="empty">Adaugă primul cuvânt în engleză mai sus. Apoi completează coloana 2 cu traducerea ta.</td></tr>';
+  if (!words.length) h += '<tr><td colspan="9" class="empty">Niciun cuvânt în învățare. Bifează cuvintele dorite în secțiunea Cuvinte.</td></tr>';
   $('#sheet').innerHTML = h + '</tbody>';
-  if (!state.checked) $('#sheetScore').textContent = '';
+  let score = '';
+  if (col && ui.checked){
+    const st = words.map(w => statusOf(w, keyOf(w), col)).filter(Boolean);
+    const ok = st.filter(s => s === 'ok').length, ap = st.filter(s => s === 'approx').length;
+    score = `${ok + ap} din ${st.length} corecte` + (ap ? ` (${ap} aproximativ)` : '');
+    const noRef = words.length - st.length; if (noRef) score += ` · ${noRef} fără traducere`;
+  }
+  $('#learnScore').textContent = score;
 }
 $('#colTabs').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  state.col = Number(b.dataset.col); state.checked = false; state.revealed.clear(); renderSheet();
+  ui.col = Number(b.dataset.col); ui.checked = false; ui.revealed.clear(); renderLearn();
 });
-$('#rangeSel').addEventListener('change', () => { state.checked = false; renderSheet(); });
 $('#sheet').addEventListener('input', e => {
   const inp = e.target.closest('input.ans'); if (!inp) return;
-  const w = db.words.find(x => x.id === inp.closest('tr').dataset.id); if (!w) return;
-  const c = Number(inp.dataset.col);
-  if (c === 2) w.ro = inp.value.trim();
-  else if (inp.value.trim()) w.attempts[c] = inp.value; else delete w.attempts[c];
-  inp.classList.remove('ok', 'bad'); touch(w); save();
-});
-$('#sheet').addEventListener('change', e => {
-  const inp = e.target.closest('input.ans'); if (!inp || inp.dataset.col !== '2') return;
-  const w = db.words.find(x => x.id === inp.closest('tr').dataset.id);
-  if (!w || !$('#autoCard').checked || !settings.key || !canMakeCard(w)) return;
-  generateCards([w]).then(n => { if (!n) toast(`Cardul pentru „${parseEntry(w.en).display}” nu a ieșit bine. Îl poți genera din Repetiție.`, true); renderBadge(); })
-    .catch(err => toast(`Cardul pentru „${parseEntry(w.en).display}” nu s-a generat: ${err.message}`, true));
+  const k = inp.closest('tr').dataset.k, c = Number(inp.dataset.col);
+  db.att[k] = db.att[k] || {};
+  if (inp.value.trim()) db.att[k][c] = inp.value; else delete db.att[k][c];
+  if (db.acc[k]) delete db.acc[k][c];
+  inp.classList.remove('ok', 'bad', 'approx'); save();
 });
 $('#sheet').addEventListener('keydown', e => {
   if (e.key !== 'Enter' || !e.target.matches('input.ans')) return;
   e.preventDefault();
-  const inputs = [...document.querySelectorAll('#sheet input.ans')];
-  const next = inputs[inputs.indexOf(e.target) + 1]; if (next) next.focus();
+  const all = [...document.querySelectorAll('#sheet input.ans')];
+  const next = all[all.indexOf(e.target) + 1]; if (next) next.focus();
 });
 $('#sheet').addEventListener('click', e => {
   const b = e.target.closest('button[data-act]'); if (!b) return;
-  const tr = b.closest('tr'), id = tr.dataset.id, w = db.words.find(x => x.id === id);
-  if (b.dataset.act === 'reveal'){ state.revealed.has(id) ? state.revealed.delete(id) : state.revealed.add(id); renderSheet(); }
-  if (b.dataset.act === 'draw') openDraw(tr.querySelector('input.ans'), 'ro');
-  if (b.dataset.act === 'clearcell' && w){
-    if (state.col === 2) w.ro = ''; else delete w.attempts[state.col];
-    touch(w); save(); renderSheet();
-  }
-  if (b.dataset.act === 'tr' && w){
-    busy(b, true, '…');
-    translateWords([w]).then(() => renderSheet()).catch(err => { toast(err.message, true); busy(b, false); });
-  }
-  if (b.dataset.act === 'del' && w && confirm(`Ștergi „${parseEntry(w.en).display}”?`)){
-    db.words = db.words.filter(x => x.id !== id);
-    db.deleted.push({ id, at: Date.now() }); save(); renderAll();
-  }
+  const k = b.closest('tr').dataset.k, c = ui.col;
+  if (b.dataset.act === 'reveal'){ ui.revealed.has(k) ? ui.revealed.delete(k) : ui.revealed.add(k); }
+  if (b.dataset.act === 'clear'){ if (db.att[k]) delete db.att[k][c]; if (db.acc[k]) delete db.acc[k][c]; save(); }
+  if (b.dataset.act === 'accept'){ db.acc[k] = { ...(db.acc[k] || {}), [c]: true }; save(); }
+  renderLearn();
 });
-$('#checkCol').addEventListener('click', () => {
-  state.checked = true; renderSheet();
-  const k = state.col, all = visibleWords(), words = all.filter(w => original(w, langOf(k)));
-  const ok = words.filter(w => matches(w.attempts[k], original(w, langOf(k)))).length;
-  const noRef = all.length - words.length;
-  $('#sheetScore').textContent = (words.length ? `${ok} din ${words.length} corecte` : '') + (noRef ? ` · ${noRef} fără traducere pe coloana 2` : '');
-});
-$('#clearCol').addEventListener('click', () => {
-  const msg = state.col === 2 ? 'Golești coloana 2? Traducerile de aici sunt referința pentru coloanele 4, 6 și 8.' : `Golești coloana ${state.col} pentru cuvintele afișate?`;
-  if (!confirm(msg)) return;
-  visibleWords().forEach(w => {
-    if (state.col === 2){ if (w.ro){ w.ro = ''; touch(w); } }
-    else if (w.attempts[state.col]){ delete w.attempts[state.col]; touch(w); }
-  });
-  state.checked = false; state.revealed.clear(); save(); renderSheet();
+$('#checkCol').addEventListener('click', () => { ui.checked = true; renderLearn(); });
+$('#restart').addEventListener('click', () => {
+  const words = learnWords(); if (!words.length) return;
+  if (!confirm(`Golești coloanele 2–8 pentru cele ${words.length} cuvinte din învățare?`)) return;
+  words.forEach(w => { const k = keyOf(w); delete db.att[k]; delete db.acc[k]; });
+  ui.checked = false; ui.revealed.clear(); save(); renderLearn();
 });
 
-$('#addForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const en = $('#newEn').value.trim();
-  if (!en){ toast('Scrie cuvântul în engleză.', true); return; }
-  if ((en.match(/\[/g) || []).length !== (en.match(/\]/g) || []).length){ toast('Parantezele drepte nu sunt închise corect.', true); return; }
-  const disp = norm(parseEntry(en).display);
-  if (db.words.some(w => norm(parseEntry(w.en).display) === disp) && !confirm('Cuvântul există deja în listă. Îl adaug din nou?')) return;
-  const w = newWord(en, '');
-  db.words.push(w); save();
-  $('#newEn').value = ''; $('#newEn').focus();
-  renderAll();
-  if ($('#autoCard').checked && settings.key && canMakeCard(w)){
-    generateCards([w]).then(n => { if (!n) toast(`Cardul pentru „${parseEntry(w.en).display}” nu a ieșit bine. Îl poți genera din Repetiție.`, true); renderBadge(); })
-      .catch(err => toast(`Cardul pentru „${parseEntry(w.en).display}” nu s-a generat: ${err.message}`, true));
-  }
-});
-
-/* ---------- Traducere cu Gemini (coloana 2) ---------- */
-const TR_PROMPT = `Tradu în română fiecare expresie din engleză. Dă traducerea cea mai uzuală, scurtă (1-3 cuvinte; cel mult două variante, separate prin virgulă). Pentru expresii cu prepoziție (ex: guilty of, protest against) tradu expresia completă. Verbele la infinitiv cu „a” (ex: thrive -> a prospera).
-Returnează STRICT un array JSON de obiecte {"id","translation"}, păstrând "id" primit.`;
-async function translateWords(words){
-  const need = [];
-  for (const w of words){
-    if (w.card?.translation){ w.ro = w.card.translation; touch(w); } // exista deja pe card, fara apel la API
-    else need.push(w);
-  }
-  for (let i = 0; i < need.length; i += 20){
-    const batch = need.slice(i, i + 20);
-    const out = await gemini([{ text: TR_PROMPT + '\n\nExpresii:\n' + JSON.stringify(batch.map(w => ({ id: w.id, expression: parseEntry(w.en).display }))) }]);
-    const arr = Array.isArray(out) ? out : (out.items || out.translations || []);
-    for (const o of arr){ const w = db.words.find(x => x.id === o.id); if (w && o.translation){ w.ro = String(o.translation).trim(); touch(w); } }
-  }
-  save();
-  const todo = words.filter(canMakeCard);
-  if ($('#autoCard').checked && settings.key && todo.length){
-    (async () => { for (let i = 0; i < todo.length; i += 10) await generateCards(todo.slice(i, i + 10)); })()
-      .then(renderBadge).catch(err => toast('Cardurile nu s-au generat: ' + err.message, true));
-  }
-}
-$('#trCol').addEventListener('click', async e => {
-  const empty = visibleWords().filter(w => !w.ro);
-  if (!empty.length){ toast('Toate cuvintele afișate au deja traducere.'); return; }
-  busy(e.target, true, 'Traduc…');
-  try { await translateWords(empty); toast(`Am tradus ${empty.filter(w => w.ro).length} din ${empty.length} cuvinte.`); }
-  catch(err){ toast(err.message, true); }
-  busy(e.target, false); renderSheet();
-});
-
-/* ---------- Repetitie spatiala (SM-2) ---------- */
+/* ================= Repetitie (SM-2) ================= */
+const newSrs = () => ({ ef: 2.5, interval: 0, reps: 0, due: 0, last: 0 });
+const srsOf = line => db.progress[cardKey(line)] || newSrs();
 function schedule(srs, q){
   const s = { ...srs }, now = Date.now();
   if (q < 3){ s.reps = 0; s.interval = 0; s.due = now + 10 * 60e3; }
@@ -537,267 +674,127 @@ function schedule(srs, q){
     s.reps++; s.due = now + s.interval * 864e5;
   }
   s.ef = Math.max(1.3, s.ef + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)));
+  s.last = now;
   return s;
 }
 const intervalLabel = s => s.interval === 0 ? '10 min' : s.interval === 1 ? '1 zi' : s.interval + ' zile';
-const dueWords = () => db.words.filter(w => w.card && w.srs.due <= Date.now()).sort((a, b) => a.srs.due - b.srs.due);
-function renderBadge(){ const n = dueWords().length; $('#dueBadge').textContent = n ? n : ''; }
-
+function dueCards(){
+  const now = Date.now(), seen = [], fresh = [];
+  db.cards.forEach(l => { const s = srsOf(l); if (s.due > now) return; (s.last ? seen : fresh).push(l); });
+  seen.sort((a, b) => srsOf(a).due - srsOf(b).due);
+  return [...seen, ...fresh]; // intai repetitiile, apoi cardurile noi, in ordinea importului
+}
+function renderBadge(){ const n = dueCards().length; $('#dueBadge').textContent = n ? n : ''; }
 function renderReview(){
-  const missing = db.words.filter(canMakeCard).length;
-  const waiting = db.words.filter(w => !w.card && !canMakeCard(w)).length;
-  $('#genMissing').hidden = !missing;
-  $('#genMissing').textContent = `Generează cardurile lipsă (${missing})`;
-  const due = dueWords();
-  $('#reviewInfo').textContent = [due.length ? `${due.length} carduri de repetat acum` : '', waiting ? `${waiting} cuvinte așteaptă traducerea ta pe coloana 2` : ''].filter(Boolean).join(' · ');
-  const area = $('#reviewArea');
-  if (!db.words.some(w => w.card)){
-    area.innerHTML = '<div class="card"><p class="sentence">Încă nu ai carduri.</p><p class="meta">Adaugă cuvinte în Foaie. Cardurile se generează automat dacă ai pus cheia Gemini, sau apasă „Generează cardurile lipsă”.</p></div>';
-    return;
+  const due = dueCards(), area = $('#reviewArea');
+  $('#reviewInfo').textContent = db.cards.length ? `${db.cards.length} carduri în total` + (due.length ? ` · ${due.length} de repetat acum` : '') : '';
+  if (!db.cards.length){
+    $('#importBox').open = true;
+    area.innerHTML = '<div class="card"><p class="face">Încă nu ai carduri.</p><p class="muted">Lipește-le mai sus, câte unul pe rând, în formatul față ; spate.</p></div>';
+    renderBadge(); return;
   }
-  if (!state.review || !due.some(w => w.id === state.review.id)){
+  if (!ui.review || !due.includes(ui.review.line)){
     if (!due.length){
-      const next = db.words.filter(w => w.card).sort((a, b) => a.srs.due - b.srs.due)[0];
-      area.innerHTML = `<div class="card"><p class="sentence">Ai terminat repetițiile de acum.</p><p class="meta">Următorul card: ${new Date(next.srs.due).toLocaleString('ro-RO', { dateStyle: 'medium', timeStyle: 'short' })}</p></div>`;
+      const next = Math.min(...db.cards.map(l => srsOf(l).due));
+      area.innerHTML = `<div class="card"><p class="face">Ai terminat repetițiile de acum.</p><p class="muted">Următorul card: ${new Date(next).toLocaleString('ro-RO', { dateStyle: 'medium', timeStyle: 'short' })}</p></div>`;
       renderBadge(); return;
     }
-    state.review = { id: due[0].id, phase: 'q', answer: '', correct: null };
+    ui.review = { line: due[0], phase: 'q', answer: '', correct: false };
   }
-  const w = db.words.find(x => x.id === state.review.id), c = w.card, p = parseEntry(w.en);
-  const front = `<p class="sentence">${esc(c.sentence).replace(/_{2,}/g, '<span class="gap">___</span>')}</p>
-    <p class="meta">🏷️ <i>${esc(c.grammar)}</i></p><p class="meta">💡 <b>${esc(c.definition)}</b></p>`;
-  if (state.review.phase === 'q'){
-    area.innerHTML = `<div class="card">${front}
-      <div class="row" style="margin-top:16px"><input class="grow" type="text" id="revAns" lang="en" placeholder="Ce lipsește?" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+  const r = ui.review, [front, back] = splitCard(r.line), srs = srsOf(r.line);
+  const frontHtml = `<div class="face">${sanitize(front).replace(/_{2,}/g, '<span class="gap">___</span>')}</div>`;
+  if (r.phase === 'q'){
+    area.innerHTML = `<div class="card">${frontHtml}
+      <div class="row" style="margin-top:18px"><input class="grow" type="text" id="revAns" lang="en" placeholder="Ce lipsește?" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
       <button class="primary" id="revCheck">Verifică</button><button id="revSkip">Nu știu</button></div></div>`;
     const inp = $('#revAns'); inp.focus();
     inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('#revCheck').click(); } });
-    $('#revCheck').onclick = () => { state.review.answer = inp.value; state.review.correct = matches(inp.value, p.target) || matches(inp.value, p.display); state.review.phase = 'a'; renderReview(); };
-    $('#revSkip').onclick = () => { state.review.answer = ''; state.review.correct = false; state.review.phase = 'a'; renderReview(); };
-    return;
+    $('#revCheck').onclick = () => { r.answer = inp.value; r.correct = cardCorrect(inp.value, answerOf(back), htmlText(front)); r.phase = 'a'; renderReview(); };
+    $('#revSkip').onclick = () => { r.answer = ''; r.correct = false; r.phase = 'a'; renderReview(); };
+    renderBadge(); return;
   }
-  const r = state.review;
   const verdict = r.correct ? `<div class="verdict ok">Corect: ${esc(r.answer)}</div>`
-    : `<div class="verdict bad">${r.answer ? 'Ai scris „' + esc(r.answer) + '”. ' : ''}Răspunsul corect: ${esc(p.target)}</div>`;
+    : `<div class="verdict bad">${r.answer ? 'Ai scris „' + esc(r.answer) + '”. ' : ''}Răspunsul: ${esc(answerOf(back))}</div>`;
   const grades = [[1, 'Din nou'], [3, 'Greu'], [4, 'Bine'], [5, 'Ușor']]
-    .map(([q, l]) => `<button data-q="${q}" ${!r.correct && q > 3 ? 'class="ghost"' : ''}>${l}<small>${intervalLabel(schedule(w.srs, q))}</small></button>`).join('');
-  area.innerHTML = `<div class="card">${front}${verdict}
-    <p class="word">${esc(p.display)} <span class="pron">🔊 /${esc(c.pron)}/</span></p>
-    <p class="tr">🇷🇴 <b>${esc(cardTr(w))}</b></p>
+    .map(([q, l]) => `<button data-q="${q}">${l}<small>${intervalLabel(schedule(srs, q))}</small></button>`).join('');
+  area.innerHTML = `<div class="card">${frontHtml}${verdict}<div class="back">${sanitize(back)}</div>
     <div class="grades">${grades}</div>
-    <div class="row" style="margin-top:10px"><button class="ghost" id="regen">Regenerează cardul</button></div></div>`;
+    <div class="row" style="margin-top:10px;justify-content:flex-end"><button class="ghost" id="delCard">Șterge cardul</button></div></div>`;
   area.querySelectorAll('.grades button').forEach(b => b.onclick = () => {
-    w.srs = schedule(w.srs, Number(b.dataset.q)); touch(w); save(); state.review = null; renderReview(); renderBadge();
+    db.progress[cardKey(r.line)] = schedule(srs, Number(b.dataset.q));
+    ui.review = null; save(); scheduleSync(); renderReview();
   });
-  $('#regen').onclick = async e => {
-    busy(e.target, true, 'Generez…');
-    try { await generateCards([w]); state.review.phase = 'q'; renderReview(); }
-    catch(err){ toast(err.message, true); busy(e.target, false); }
+  $('#delCard').onclick = () => {
+    if (!confirm('Ștergi acest card?')) return;
+    db.cards = db.cards.filter(l => l !== r.line); delete db.progress[cardKey(r.line)];
+    ui.review = null; save(); scheduleSync(); renderReview();
   };
+  renderBadge();
 }
-$('#genMissing').addEventListener('click', async e => {
-  const missing = db.words.filter(canMakeCard);
-  busy(e.target, true, 'Generez…');
-  let done = 0, failed = 0;
-  try {
-    for (let i = 0; i < missing.length; i += 10){
-      const n = await generateCards(missing.slice(i, i + 10));
-      done += n; failed += Math.min(10, missing.length - i) - n;
-      e.target.textContent = `Generez… ${done}/${missing.length}`;
-    }
-    toast(failed ? `Am generat ${done} carduri. ${failed} nu au ieșit, încearcă din nou.` : `Am generat ${done} carduri.`, !!failed);
-  } catch(err){ toast(err.message, true); }
-  busy(e.target, false); renderReview(); renderBadge();
-});
+function importCards(text){
+  const set = new Set(db.cards); let added = 0, dup = 0, bad = 0;
+  for (const l of linesOf(text)){
+    const c = cardCanon(l);
+    if (!c){ bad++; continue; }
+    if (set.has(c)){ dup++; continue; }
+    set.add(c); db.cards.push(c); added++;
+  }
+  save(); scheduleSync(); renderReview();
+  toast(`Am adăugat ${added} carduri.` + (dup ? ` ${dup} existau deja.` : '') + (bad ? ` ${bad} rânduri fără „;” au fost sărite.` : ''), !added);
+}
+$('#cardImport').addEventListener('click', () => { if (!$('#cardText').value.trim()) return toast('Lipește cardurile în câmp.', true); importCards($('#cardText').value); $('#cardText').value = ''; });
+$('#cardFileBtn').addEventListener('click', () => $('#cardFile').click());
+$('#cardFile').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (f) importCards(await f.text()); });
 
-/* ---------- Propozitii ---------- */
-function pickWords(){
-  const n = Number($('#sentCount').value);
-  const pool = [...db.words];
-  for (let i = pool.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-  state.sent = { ids: pool.slice(0, n).map(w => w.id), results: null, texts: {} };
+/* ================= Setari ================= */
+function renderSettings(){
+  $('#ghOwner').value = gh.owner || ''; $('#ghRepo').value = gh.repo || ''; $('#ghBranch').value = gh.branch || 'main'; $('#ghToken').value = gh.token || '';
+  const learned = db.cards.filter(l => srsOf(l).interval >= 21).length;
+  $('#stats').innerHTML = `<dt>Cuvinte</dt><dd>${db.words.length}</dd><dt>În învățare</dt><dd>${db.sel.length}</dd>
+    <dt>Carduri</dt><dd>${db.cards.length}</dd><dt>De repetat acum</dt><dd>${dueCards().length}</dd><dt>Bine fixate (interval ≥ 21 zile)</dt><dd>${learned}</dd>`;
 }
-function renderSent(){
-  if (!state.sent.ids.length && db.words.length) pickWords();
-  const area = $('#sentArea');
-  const words = state.sent.ids.map(id => db.words.find(w => w.id === id)).filter(Boolean);
-  if (!words.length){ area.innerHTML = '<p class="hint" style="margin:0">Adaugă câteva cuvinte în Foaie ca să poți exersa propoziții.</p>'; return; }
-  area.innerHTML = words.map((w, i) => {
-    const r = state.sent.results?.find(x => Number(x.index) === i);
-    const fb = r ? `<div class="fb ${r.ok && r.wordUsedCorrectly ? 'ok' : 'bad'}"><b>${r.ok && r.wordUsedCorrectly ? 'Corect' : 'De corectat'}</b>${!r.ok || !r.wordUsedCorrectly ? `<div class="corr">${esc(r.corrected)}</div>` : ''}${esc(r.explanation)}</div>` : '';
-    return `<div class="sent-item"><div class="sent-word">${esc(parseEntry(w.en).display)}<span>${esc(w.ro || w.card?.translation || '')}</span></div>
-      <textarea data-i="${i}" lang="en" placeholder="Propoziția ta…" autocapitalize="sentences" spellcheck="false">${esc(state.sent.texts?.[i] || '')}</textarea>${fb}</div>`;
-  }).join('');
-}
-$('#sentArea').addEventListener('input', e => { if (e.target.matches('textarea')) (state.sent.texts ||= {})[e.target.dataset.i] = e.target.value; });
-$('#sentPick').addEventListener('click', () => { pickWords(); renderSent(); });
-$('#sentCount').addEventListener('change', () => { pickWords(); renderSent(); });
-$('#sentCheck').addEventListener('click', async e => {
-  const words = state.sent.ids.map(id => db.words.find(w => w.id === id)).filter(Boolean);
-  const items = words.map((w, i) => ({ index: i, word: parseEntry(w.en).display, meaning: w.ro || w.card?.translation || '', sentence: (state.sent.texts?.[i] || '').trim() })).filter(x => x.sentence);
-  if (!items.length){ toast('Scrie cel puțin o propoziție.', true); return; }
-  const prompt = `Ești profesor de engleză pentru un vorbitor nativ de română. Verifică fiecare propoziție: gramatica, ortografia, naturalețea și dacă "word" este folosit corect, cu sensul din "meaning".
-Returnează STRICT un array JSON de obiecte {"index","ok","wordUsedCorrectly","corrected","explanation"}:
-- "ok": true doar dacă propoziția e corectă gramatical și sună natural;
-- "wordUsedCorrectly": true dacă cuvântul e folosit corect și cu sensul potrivit;
-- "corrected": varianta corectată, naturală (identică dacă nu e nimic de schimbat);
-- "explanation": în română, 1-2 propoziții scurte despre ce era greșit și de ce. Dacă e corect, o sugestie scurtă sau o confirmare.
-
-Propoziții:
-${JSON.stringify(items)}`;
-  busy(e.target, true, 'Verific…');
-  try {
-    const out = await gemini([{ text: prompt }]);
-    state.sent.results = Array.isArray(out) ? out : (out.results || []);
-    renderSent();
-  } catch(err){ toast(err.message, true); }
-  busy(e.target, false);
+$('#ghSave').addEventListener('click', () => {
+  let owner = $('#ghOwner').value.trim(), repo = $('#ghRepo').value.trim().replace(/\.git$/, '');
+  const m = repo.match(/(?:github\.com\/)?([^/\s]+)\/([^/\s]+)\/?$/); if (m){ owner = m[1]; repo = m[2]; }
+  gh = { owner, repo, branch: $('#ghBranch').value.trim() || 'main', token: $('#ghToken').value.trim() };
+  localStorage.setItem(LS_GH, JSON.stringify(gh)); renderSettings();
+  if (!ghReady()){ setStatus('off'); toast('Completează utilizatorul, repository-ul și tokenul.', true); return; }
+  sync();
 });
-
-/* ---------- Scris de mana (panza) ---------- */
-const pad = $('#pad'), ctx = pad.getContext('2d');
-let drawTarget = null, drawing = false, penSeen = false, hasInk = false;
-function openDraw(input, lang){
-  drawTarget = input;
-  $('#drawTitle').textContent = lang === 'ro' ? 'Scrie în română' : 'Scrie în engleză';
-  $('#drawModal').hidden = false;
-  const r = pad.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
-  pad.width = r.width * dpr; pad.height = r.height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  clearPad();
-}
-function clearPad(){ ctx.clearRect(0, 0, pad.width, pad.height); hasInk = false; }
-const pos = e => { const r = pad.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
-pad.addEventListener('pointerdown', e => {
-  if (e.pointerType === 'pen') penSeen = true;
-  if (penSeen && e.pointerType === 'touch') return; // ignora palma cand folosesti Pencil-ul
-  drawing = true; hasInk = true; pad.setPointerCapture(e.pointerId);
-  ctx.strokeStyle = '#1E3A8A'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  ctx.beginPath(); ctx.moveTo(...pos(e));
-});
-pad.addEventListener('pointermove', e => { if (!drawing) return; ctx.lineTo(...pos(e)); ctx.stroke(); });
-['pointerup', 'pointercancel', 'pointerleave'].forEach(t => pad.addEventListener(t, () => { drawing = false; }));
-$('#drawClear').addEventListener('click', clearPad);
-$('#drawClose').addEventListener('click', () => { $('#drawModal').hidden = true; });
-$('#drawRead').addEventListener('click', async e => {
-  if (!hasInk){ toast('Scrie ceva mai întâi.', true); return; }
-  const tmp = document.createElement('canvas'); tmp.width = pad.width; tmp.height = pad.height;
-  const t = tmp.getContext('2d'); t.fillStyle = '#fff'; t.fillRect(0, 0, tmp.width, tmp.height); t.drawImage(pad, 0, 0);
-  const b64 = tmp.toDataURL('image/png').split(',')[1];
-  busy(e.target, true, 'Citesc…');
-  try {
-    const out = await gemini([{ inline_data: { mime_type: 'image/png', data: b64 } },
-      { text: 'Transcrie exact textul scris de mână din imagine (limba română, cu diacritice dacă apar). Nu corecta și nu traduce. Returnează STRICT JSON: {"text": "..."}' }]);
-    if (drawTarget){ drawTarget.value = (out.text || '').trim(); drawTarget.dispatchEvent(new Event('input', { bubbles: true })); }
-    $('#drawModal').hidden = true;
-  } catch(err){ toast(err.message, true); }
-  busy(e.target, false);
-});
-
-/* ---------- Date: setari, sincronizare, export ---------- */
-function renderData(){
-  $('#apiKey').value = settings.key || ''; $('#model').value = settings.model || ''; $('#trMode').value = settings.trMode;
-  const cards = db.words.filter(w => w.card).length, learned = db.words.filter(w => w.srs.interval >= 21).length;
-  $('#stats').innerHTML = `<dt>Cuvinte</dt><dd>${db.words.length}</dd><dt>Cu card</dt><dd>${cards}</dd>
-    <dt>De repetat acum</dt><dd>${dueWords().length}</dd><dt>Bine fixate (interval ≥ 21 zile)</dt><dd>${learned}</dd>`;
-}
-$('#trMode').addEventListener('change', e => {
-  settings.trMode = e.target.value; localStorage.setItem(LS_SET, JSON.stringify(settings));
-  toast(e.target.value === 'mine' ? 'Cardurile folosesc traducerea ta.' : 'Cardurile folosesc traducerea lui Gemini.');
-});
-$('#saveSettings').addEventListener('click', () => {
-  settings.key = $('#apiKey').value.trim(); settings.model = $('#model').value.trim() || 'gemini-2.5-flash';
-  localStorage.setItem(LS_SET, JSON.stringify(settings)); toast('Setări salvate.');
-});
-async function deliver(blob, name){
-  const file = new File([blob], name, { type: blob.type });
+async function deliver(text, name){
+  const blob = new Blob([text], { type: 'text/plain' }), file = new File([blob], name, { type: 'text/plain' });
   if (navigator.canShare && navigator.canShare({ files: [file] })){
     try { await navigator.share({ files: [file] }); return; } catch(e){ if (e.name === 'AbortError') return; }
   }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
-const stamp = () => new Date().toISOString().slice(0, 10);
-$('#exportJson').addEventListener('click', () => {
-  deliver(new Blob([JSON.stringify({ app: 'caiet', version: 1, exportedAt: Date.now(), ...db })], { type: 'application/json' }), `caiet-backup-${stamp()}.json`);
-});
-$('#importBtn').addEventListener('click', () => $('#importFile').click());
-$('#importFile').addEventListener('change', async e => {
-  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-  try {
-    const inc = JSON.parse(await f.text());
-    if (!Array.isArray(inc.words)) throw new Error('Fișierul nu este un backup al caietului.');
-    const r = mergeDb(inc); renderAll();
-    toast(`Import gata: ${r.added} noi, ${r.updated} actualizate, ${r.removed} șterse, ${r.dupes} duplicate sărite.`);
-  } catch(err){ toast('Importul a eșuat: ' + err.message, true); }
-});
-function mergeDb(inc){
-  const del = new Map(db.deleted.map(d => [d.id, d.at]));
-  (inc.deleted || []).forEach(d => { if (!del.has(d.id) || del.get(d.id) < d.at) del.set(d.id, d.at); });
-  const map = new Map(db.words.map(w => [w.id, w]));
-  const keys = new Set(db.words.map(w => norm(parseEntry(w.en).display)));
-  let added = 0, updated = 0, removed = 0, dupes = 0;
-  for (const w of inc.words){
-    const cur = map.get(w.id);
-    if (!cur){
-      if (keys.has(norm(parseEntry(w.en).display))){ dupes++; continue; }
-      map.set(w.id, w); added++;
-    } else if ((w.updatedAt || 0) > (cur.updatedAt || 0)){ map.set(w.id, w); updated++; }
-  }
-  for (const [id, at] of del){ const w = map.get(id); if (w && (w.updatedAt || 0) <= at){ map.delete(id); removed++; } }
-  db.words = [...map.values()].sort((a, b) => a.createdAt - b.createdAt);
-  db.deleted = [...del].map(([id, at]) => ({ id, at }));
-  save();
-  return { added, updated, removed, dupes };
-}
-function loadScript(src){
-  return new Promise((ok, fail) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => fail(new Error('Nu am putut încărca biblioteca Excel.')); document.head.appendChild(s); });
-}
-$('#exportXlsx').addEventListener('click', async e => {
-  const rows = db.words.map(w => ({
-    'Engleza': parseEntry(w.en).display, 'Romana': w.ro, 'De completat': parseEntry(w.en).target,
-    'Propozitie': w.card?.sentence || '', 'Gramatica': w.card?.grammar || '', 'Definitie': w.card?.definition || '',
-    'Pronuntie': w.card?.pron || '', 'Traducere pe card': w.card ? cardTr(w) : '', 'Traducere Gemini': w.card?.translation || '',
-    'Urmatoarea repetitie': w.card ? new Date(w.srs.due).toLocaleDateString('ro-RO') : '', 'Adaugat': new Date(w.createdAt).toLocaleDateString('ro-RO')
-  }));
-  busy(e.target, true, 'Pregătesc…');
-  try {
-    if (!window.XLSX) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
-    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Vocabular');
-    const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    await deliver(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `vocabular-${stamp()}.xlsx`);
-  } catch(err){ toast(err.message, true); }
-  busy(e.target, false);
-});
-$('#exportNoji').addEventListener('click', () => {
-  const clean = s => String(s || '').replace(/;/g, ',').replace(/\s*\n\s*/g, ' ');
-  const lines = db.words.filter(w => w.card).map(w => {
-    const c = w.card, p = parseEntry(w.en);
-    const front = `${clean(c.sentence)}<br><br>🏷️ <i>${clean(c.grammar)}</i><br>💡 <b>${clean(c.definition)}</b>`;
-    const back = `<b>${clean(p.display)}</b> 🔊 <i>/${clean(c.pron)}/</i><br><br>🇷🇴 <b>${clean(cardTr(w))}</b>`;
-    return front + ' ; ' + back;
-  });
-  if (!lines.length){ toast('Nu ai încă niciun card generat.', true); return; }
-  deliver(new Blob([lines.join('\n')], { type: 'text/plain' }), `noji-${stamp()}.txt`);
-});
-$('#wipe').addEventListener('click', () => {
-  if (!confirm('Ștergi toate cuvintele de pe acest dispozitiv? Fă un backup înainte.')) return;
+$('#dlWords').addEventListener('click', () => deliver(toText(db.words.map(wordLine)), 'cuvinte.txt'));
+$('#dlCards').addEventListener('click', () => deliver(toText(db.cards), 'carduri.txt'));
+$('#wipeCards').addEventListener('click', () => {
+  if (!db.cards.length) return;
+  if (!confirm(`Ștergi toate cele ${db.cards.length} carduri? Se șterg și de pe GitHub.`)) return;
   if (!confirm('Sigur? Acțiunea nu poate fi anulată.')) return;
-  db = { words: [], deleted: [] }; save(); renderAll(); renderData();
+  db.cards = []; db.progress = {}; ui.review = null; save(); scheduleSync(); renderAll();
+});
+$('#wipeLocal').addEventListener('click', () => {
+  if (!ghReady()){ toast('Configurează întâi GitHub.', true); return; }
+  if (!confirm('Înlocuiești datele de pe acest dispozitiv cu cele de pe GitHub? Bifele și coloanele completate se păstrează.')) return;
+  const keep = { sel: db.sel, att: db.att, acc: db.acc };
+  db = Object.assign(emptyDb(), keep); db.base = { words: '', cards: '' }; // nimic local de impus peste GitHub
+  db.words = []; db.cards = []; save(); renderAll(); sync();
 });
 
-/* ---------- Utilitare ---------- */
-function busy(btn, on, label){
-  if (on){ btn.dataset.label = btn.textContent; btn.textContent = label; btn.disabled = true; }
-  else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; }
-}
+/* ================= Utilitare ================= */
 let toastTimer;
 function toast(msg, err = false){
   const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false;
   clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, err ? 6000 : 3000);
 }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && ghReady()) sync(); });
 
 renderAll();
+if (ghReady()) sync(); else setStatus('off');
 setInterval(renderBadge, 60e3);
 </script>
 </body>
