@@ -186,6 +186,7 @@ dl.stats dd{margin:0;font-weight:600}
   </div>
   <div class="row">
     <button id="checkCol" class="primary">Verifică coloana</button>
+    <button id="shuffle">Amestecă din nou</button>
     <button id="restart">Ia de la capăt</button>
     <span id="learnScore" class="score" aria-live="polite"></span>
   </div>
@@ -350,7 +351,7 @@ function cardCorrect(ans, word, frontText){
 }
 
 /* ================= Stocare locala ================= */
-function emptyDb(){ return { words: [], cards: [], progress: {}, sel: [], att: {}, acc: {}, base: { words: null, cards: null } }; }
+function emptyDb(){ return { words: [], cards: [], progress: {}, sel: [], att: {}, acc: {}, order: {}, base: { words: null, cards: null } }; }
 function loadDb(){
   try { const d = JSON.parse(localStorage.getItem(LS)); if (d && Array.isArray(d.words)) return Object.assign(emptyDb(), d); } catch(e){}
   const d = emptyDb();
@@ -610,10 +611,26 @@ function cellHtml(w, k, c, col){
   if (c === col - 1){ const cue = cueOf(w, k, c); return `<td class="cue">${cue ? esc(cue) : '<span class="muted">—</span>'}</td>`; }
   return '<td class="hid"><span>•</span></td>';
 }
+function shuffled(arr){ const a = [...arr]; for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+// fiecare coloana are ordinea ei, pastrata cat lucrezi pe ea; alta decat la coloana anterioara
+function orderFor(col, words){
+  const keys = words.map(keyOf), set = new Set(keys);
+  let ord = db.order[col];
+  if (!ord){
+    const prev = (db.order[col - 1] || keys).filter(k => set.has(k)).join('|');
+    for (let i = 0; i < 6; i++){ ord = shuffled(keys); if (keys.length < 2 || ord.join('|') !== prev) break; }
+  } else {
+    ord = ord.filter(k => set.has(k));
+    ord = ord.concat(shuffled(keys.filter(k => !ord.includes(k))));
+  }
+  db.order[col] = ord; save();
+  const byK = new Map(words.map(w => [keyOf(w), w]));
+  return ord.map(k => byK.get(k));
+}
 function renderLearn(){
-  const col = ui.col, words = learnWords();
+  const col = ui.col, words = col ? orderFor(col, learnWords()) : learnWords();
   document.querySelectorAll('#colTabs button').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.col) === col));
-  $('#checkCol').hidden = !col;
+  $('#checkCol').hidden = $('#shuffle').hidden = !col;
   let h = '<thead><tr><th class="num">#</th>';
   for (let c = 1; c <= 8; c++) h += `<th class="${!col ? '' : c === col ? 'is-active' : c === col - 1 ? 'is-cue' : 'is-hidden'}">${c} ${langOf(c).toUpperCase()}</th>`;
   h += '</tr></thead><tbody>';
@@ -662,10 +679,12 @@ $('#sheet').addEventListener('click', e => {
   renderLearn();
 });
 $('#checkCol').addEventListener('click', () => { ui.checked = true; renderLearn(); });
+$('#shuffle').addEventListener('click', () => { delete db.order[ui.col]; ui.checked = false; save(); renderLearn(); });
 $('#restart').addEventListener('click', () => {
   const words = learnWords(); if (!words.length) return;
   if (!confirm(`Golești coloanele 2–8 pentru cele ${words.length} cuvinte din învățare?`)) return;
   words.forEach(w => { const k = keyOf(w); delete db.att[k]; delete db.acc[k]; });
+  db.order = {};
   ui.checked = false; ui.revealed.clear(); save(); renderLearn();
 });
 
