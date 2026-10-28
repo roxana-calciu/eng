@@ -71,3 +71,4 @@ wear on=a se scurge greu (despre timp)
 wear away=a se toci / a se eroda
 wear down=a epuiza / a slăbi rezistența cuiva
 wear out=a (se) uza complet / a epuiza
+house-warming=petrecere de casă nouă
