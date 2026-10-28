@@ -83,6 +83,7 @@ table.sheet{border-collapse:collapse;width:100%;min-width:900px}
 .sheet td{border-bottom:1px solid var(--rule);padding:6px 8px;height:54px;vertical-align:middle;font:18px/1.25 var(--serif);color:var(--ink)}
 .sheet .num{width:44px;color:var(--muted);font:13px var(--sans);text-align:right;border-right:2px solid var(--margin);padding-right:10px}
 .sheet td.hid span{color:var(--rule);letter-spacing:2px}
+.sheet.focus td.hid span::after{content:''}
 .sheet td.cue{background:var(--chip)}
 .sheet td.val.ok,.sheet td.val.approx{color:var(--ok)}
 .sheet td.val.bad{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px}
@@ -91,7 +92,15 @@ table.sheet{border-collapse:collapse;width:100%;min-width:900px}
 .cellwrap{display:flex;align-items:center;gap:4px}
 .stem{white-space:nowrap;color:var(--text)}
 .sheet input.ans{font:18px var(--serif);color:var(--ink);border-color:var(--rule);min-height:42px;padding:6px 8px;min-width:120px}
-.sheet input.ans.prep{min-width:64px;width:76px;text-align:center}
+.sheet input.ans.prep{min-width:110px;width:150px;flex:0 0 auto;text-align:center}
+/* in modul de exercitiu: coloana activa larga pentru Apple Pencil, cele ascunse inguste */
+table.sheet.focus{min-width:0;table-layout:auto}
+.sheet.focus th.is-hidden,.sheet.focus td.hid{width:1%;padding:6px 3px;text-align:center}
+.sheet.focus td.hid span{letter-spacing:0}
+.sheet.focus td.cue{width:28%}
+.sheet td.act{width:55%;min-width:300px}
+.sheet td.act .cellwrap input.ans:not(.prep){flex:1 1 auto;width:100%;min-height:58px;font-size:21px}
+.sheet td.act input.ans.prep{min-height:58px;font-size:21px}
 .sheet input.ans.ok{background:var(--ok-bg);border-color:var(--ok)}
 .sheet input.ans.approx{background:var(--ok-bg);border:1px dashed var(--ok)}
 .sheet input.ans.bad{background:var(--bad-bg);border-color:var(--bad)}
@@ -577,12 +586,8 @@ const attOf = (k, c) => db.att[k]?.[c] || '';
 const withStem = (p, v) => [p.before, v, p.after].filter(Boolean).join(' ');
 function expectedOf(w, c){ const p = parseEn(w.en); if (c === 1) return p.display; if (c % 2 === 0) return w.ro; return p.prep || p.display; }
 function statusOf(w, k, c){ if (db.acc[k]?.[c]) return 'ok'; return matchStatus(attOf(k, c), expectedOf(w, c)); }
-function cueOf(w, k, c){
-  const p = parseEn(w.en);
-  if (c === 1) return p.display;
-  if (c % 2 === 0) return attOf(k, c) || w.ro;
-  return p.prep ? withStem(p, attOf(k, c) || p.prep) : (attOf(k, c) || p.display);
-}
+// indiciul e mereu cuvantul din lista, nu ce ai scris tu pe coloana anterioara
+function cueOf(w, k, c){ return c % 2 === 0 ? w.ro : parseEn(w.en).display; }
 function cellHtml(w, k, c, col){
   const p = parseEn(w.en), isPrep = c % 2 === 1 && c > 1 && !!p.prep;
   if (!col){
@@ -593,7 +598,7 @@ function cellHtml(w, k, c, col){
   if (c === col){
     const a = attOf(k, c), mark = ui.checked ? statusOf(w, k, c) : '';
     const exp = isPrep ? withStem(p, p.prep) : (expectedOf(w, c) || 'fără traducere în listă');
-    return `<td><div class="cellwrap">`
+    return `<td class="act"><div class="cellwrap">`
       + (isPrep && p.before ? `<span class="stem">${esc(p.before)}</span>` : '')
       + `<input class="ans ${mark} ${isPrep ? 'prep' : ''}" data-col="${c}" lang="${langOf(c)}" value="${esc(a)}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Coloana ${c}">`
       + (isPrep && p.after ? `<span class="stem">${esc(p.after)}</span>` : '')
@@ -603,14 +608,14 @@ function cellHtml(w, k, c, col){
       + `</div>${ui.revealed.has(k) ? `<div class="reveal">${esc(exp)}</div>` : ''}</td>`;
   }
   if (c === col - 1){ const cue = cueOf(w, k, c); return `<td class="cue">${cue ? esc(cue) : '<span class="muted">—</span>'}</td>`; }
-  return '<td class="hid"><span>•••</span></td>';
+  return '<td class="hid"><span>•</span></td>';
 }
 function renderLearn(){
   const col = ui.col, words = learnWords();
   document.querySelectorAll('#colTabs button').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.col) === col));
   $('#checkCol').hidden = !col;
   let h = '<thead><tr><th class="num">#</th>';
-  for (let c = 1; c <= 8; c++) h += `<th class="${col && c === col ? 'is-active' : ''}">${c} ${langOf(c).toUpperCase()}</th>`;
+  for (let c = 1; c <= 8; c++) h += `<th class="${!col ? '' : c === col ? 'is-active' : c === col - 1 ? 'is-cue' : 'is-hidden'}">${c} ${langOf(c).toUpperCase()}</th>`;
   h += '</tr></thead><tbody>';
   words.forEach((w, i) => {
     const k = keyOf(w);
@@ -620,6 +625,7 @@ function renderLearn(){
   });
   if (!words.length) h += '<tr><td colspan="9" class="empty">Niciun cuvânt în învățare. Bifează cuvintele dorite în secțiunea Cuvinte.</td></tr>';
   $('#sheet').innerHTML = h + '</tbody>';
+  $('#sheet').classList.toggle('focus', !!col);
   let score = '';
   if (col && ui.checked){
     const st = words.map(w => statusOf(w, keyOf(w), col)).filter(Boolean);
